@@ -1519,6 +1519,9 @@ object AudioCache {
         return cache.getCachedLength(key, 0, probe).coerceAtLeast(0L)
     }
 
+    /** The cache key [uri] itself resolves to right now — the rendition the player is using. */
+    fun cacheKeyOf(uri: Uri): String = keyFactory.buildCacheKey(DataSpec(uri))
+
     /**
      * Pulls [length] bytes of [videoId] from [position] into the cache.
      * [CacheWriter] fetches only the gaps, so a range already partly on disk —

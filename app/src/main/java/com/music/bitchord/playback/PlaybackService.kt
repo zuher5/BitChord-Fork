@@ -1438,6 +1438,9 @@ class PlaybackService : MediaLibraryService() {
         }
     }
 
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
+        mediaSession
+
     /**
      * Replaces everything around the current track with its YouTube Music
      * radio. The playing item itself is retained, so asking from Android Auto
@@ -1494,6 +1497,7 @@ class PlaybackService : MediaLibraryService() {
         }
     }
 
+    /**
      * Transitions between two versions/sources of the same track (e.g. a film
      * video and its release audio) in place, at the mapped position.
      */
@@ -1888,6 +1892,9 @@ class PlaybackService : MediaLibraryService() {
         } else if (window.currentCanonicalIndex != canonicalIndex) {
             window.jumpTo(canonicalIndex)
         }
+    }
+
+    private fun boundedMediaItems(plan: BoundedContextPlan, window: QueueWindow): List<MediaItem> {
         val canonical = plan.canonicalContext
         val history = plan.history.map { song ->
             boundedMediaItem(song, canonical.indexOfFirst { it.contextEntryKey() == song.contextEntryKey() }, window.cycleId)
@@ -5997,6 +6004,12 @@ class PlaybackService : MediaLibraryService() {
         /** More room after a stall than at the start — see the load control. */
         const val RESUME_PLAYBACK_MS = 2_000
 
+        /** Upper bound per range; [PlayerClient.rangeBytesFor] narrows it per client. */
+        const val STREAM_CHUNK_BYTES = 1L * 1024 * 1024
+
+        /** Shortest gap "skip silence" is allowed to touch. */
+        const val MIN_SILENCE_US = 1_000_000L
+
         /**
          * Outer cap on stream resolution. Individual client calls and probes
          * have their own timeouts, but iterating all seven plus the NewPipe
@@ -6030,6 +6043,9 @@ class PlaybackService : MediaLibraryService() {
          * be worth the break in the audio it costs.
          */
         const val UPGRADE_MIN_REMAINING_MS = 20_000L
+
+        /** Minimum interval between accepted listener-requested quality retries. */
+        const val MANUAL_UPGRADE_COOLDOWN_MS = 30_000L
 
         /**
          * How long a replacement gets to report a length before it is

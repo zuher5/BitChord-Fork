@@ -49,6 +49,7 @@ import com.music.bitchord.data.model.artworkAt
  * Tap on a playable card queues it straight into the player — the fork has no
  * detail pages, so browse-only cards (albums/playlists) render inert.
  */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     home: UiState<HomeFeed>,

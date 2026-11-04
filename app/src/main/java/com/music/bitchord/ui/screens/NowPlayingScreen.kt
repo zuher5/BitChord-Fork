@@ -137,7 +137,7 @@ fun NowPlayingScreen(
                 Icon(
                     Icons.Rounded.Shuffle,
                     contentDescription = "Shuffle",
-                    tint = if (state.shuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (shuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onPrevious, enabled = state.hasPrevious) {

@@ -81,7 +81,10 @@ fun BitChordApp(viewModel: MainViewModel = viewModel()) {
         Column(Modifier.fillMaxSize()) {
             AnimatedContent(
                 targetState = selectedTab,
-                transitionSpec = { fadeIn(slideInVertically { it / 8 }) togetherWith fadeOut(slideOutVertically { -it / 8 }) },
+                transitionSpec = {
+                    (fadeIn() + slideInVertically { it / 8 }) togetherWith
+                        (fadeOut() + slideOutVertically { -it / 8 })
+                },
                 label = "tabs",
                 modifier = Modifier.weight(1f),
             ) { tab ->
@@ -90,10 +93,10 @@ fun BitChordApp(viewModel: MainViewModel = viewModel()) {
                         home = home,
                         onRefresh = viewModel::loadHome,
                         onLoadMore = viewModel::loadMoreHome,
-                        onPlaySong = { song -> scope.launch { controller.playSongs(listOf(song), 0) } },
+                        onPlaySong = { song -> scope.launch { controller?.playSongs(listOf(song), 0) } },
                     )
                     AppTab.LOCAL -> LocalScreen(
-                        onPlaySongs = { songs, index -> scope.launch { controller.playSongs(songs, index) } },
+                        onPlaySongs = { songs, index -> scope.launch { controller?.playSongs(songs, index) } },
                     )
                     AppTab.SEARCH -> SearchScreen(
                         suggestions = suggestions,
@@ -101,7 +104,7 @@ fun BitChordApp(viewModel: MainViewModel = viewModel()) {
                         filter = filter,
                         onInput = viewModel::onSearchInput,
                         onSubmit = { query, filter -> viewModel.search(query, filter) },
-                        onPlaySong = { song -> scope.launch { controller.playSongs(listOf(song), 0) } },
+                        onPlaySong = { song -> scope.launch { controller?.playSongs(listOf(song), 0) } },
                     )
                 }
             }
