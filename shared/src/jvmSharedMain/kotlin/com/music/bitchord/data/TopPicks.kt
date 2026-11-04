@@ -88,9 +88,6 @@ object TopPicks {
             // one, or a spelling of their name); two of them would be the
             // same face on two cards.
             .distinctBy { normalizedArtistName(it.name) }
-        // Every artist face on the row is Apple Music's photo of them, not
-        // YouTube's channel art: the artists themselves, and the people their
-        // fans also play. Looked up together, a few at a time.
         val photos = applePhotos(artists)
         val mixes = mixesAsync.await()
         Log.d(TAG, "topPicks: history=${history.size} artists=${artists.map { it.name }} mixes=${mixes.keys}")
@@ -240,21 +237,13 @@ object TopPicks {
      * A card's own artist is checked against the page already in hand; a
      * related one's page is fetched only if their photo isn't known yet.
      */
-    private suspend fun applePhotos(artists: List<ArtistCard>): Map<String, String> = coroutineScope {
-        val catalogues = LinkedHashMap<String, suspend () -> Collection<String>>()
-        artists.forEach { artist -> catalogues.putIfAbsent(artist.name) { AppleCatalogue.titlesOf(artist.page) } }
-        artists.forEach { artist ->
-            artist.related.forEach { (name, channel) ->
-                catalogues.putIfAbsent(name) {
-                    YtMusicRepository.artistLanding(channel).getOrNull()?.let(AppleCatalogue::titlesOf).orEmpty()
-                }
-            }
-        }
-        val limiter = Semaphore(PHOTO_LOOKUPS_AT_ONCE)
-        catalogues.map { (name, catalogue) ->
-            async { limiter.withPermit { AppleArtistPhotos.photoFor(name, catalogue)?.let { name to it } } }
-        }.awaitAll().filterNotNull().toMap()
-    }
+    /**
+     * Artist photos came from Apple Music's catalogue upstream. The fork has
+     * no Apple integration, so this returns nothing and every card falls back
+     * to YouTube's channel art — the plumbing downstream is kept as-is so the
+     * photo map stays a pure detail of this file.
+     */
+    private suspend fun applePhotos(artists: List<ArtistCard>): Map<String, String> = emptyMap()
 
     private fun latestRelease(artists: List<ArtistCard>): TopPick? {
         data class Candidate(val rank: Int, val artist: ArtistCard, val item: ShelfItem, val year: Int, val single: Boolean)
