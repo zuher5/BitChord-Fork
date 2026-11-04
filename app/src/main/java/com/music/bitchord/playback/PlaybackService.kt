@@ -5179,7 +5179,11 @@ class PlaybackService : MediaLibraryService() {
                 ACTION_TOGGLE_FAVORITE -> session.player.currentMediaItem
                     ?.takeIf(::canLike)
                     ?.let { item -> toggleFavoriteFromNotification(item.mediaId) }
-                // The actual YouTube rating is asynchronous. The command itself has been accepted;
+                else -> return Futures.immediateFuture(
+                    SessionResult(SessionError.ERROR_NOT_SUPPORTED),
+                )
+            }
+            // The actual YouTube rating is asynchronous. The command itself has been accepted;
             // the notification is refreshed when the network write completes.
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
