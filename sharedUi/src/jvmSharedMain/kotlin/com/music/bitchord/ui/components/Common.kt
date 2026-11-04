@@ -572,7 +572,7 @@ private fun SongRowContent(
         } else {
             Box(Modifier.trackArtSize(52.dp, song.isVideo)) {
                 AsyncImage(
-                    model = com.music.bitchord.ui.player.rememberRemoteArtworkUrl(song)?.artworkAt(ROW_ART_PX),
+                    model = song.thumbnailUrl?.artworkAt(ROW_ART_PX),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
