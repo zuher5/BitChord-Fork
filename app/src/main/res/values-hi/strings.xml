@@ -83,7 +83,6 @@
     <string name="prefer_lossless">लॉसलेस को प्राथमिकता दें</string>
     <string name="lossless_source_subtitle">सीधे स्रोत से FLAC और ALAC</string>
     <string name="overridden">बदल दिया गया</string>
-    <string name="add_module_source">मॉड्यूल स्रोत जोड़ें</string>
     <string name="remove_source">यह स्रोत हटाएं</string>
     <string name="test">जांचें</string>
     <string name="testing">जांच हो रही है…</string>
@@ -125,22 +124,7 @@
     <string name="source_unreachable">अभी पहुंचा नहीं जा सकता · %1$s</string>
     <string name="checking">जांच हो रही है…</string>
     <string name="failed">विफल</string>
-    <string name="widget_square_label">अभी चल रहा है 2×2</string>
-    <string name="widget_wide_label">अभी चल रहा है 4×2</string>
-    <string name="widget_square_description">प्लेबैक नियंत्रणों के साथ एल्बम आर्ट, चौकोर आकार में।</string>
-    <string name="widget_wide_description">ट्रैक और प्लेबैक नियंत्रणों के साथ एल्बम आर्ट, पूरी चौड़ाई में।</string>
-    <string name="widget_play">चलाएं</string>
-    <string name="widget_pause">रोकें</string>
     <string name="widget_next">अगला</string>
-    <string name="widget_previous">पिछला</string>
-    <string name="widget_artwork">एल्बम आर्ट</string>
-    <string name="widget_nothing_played">अभी तक कुछ नहीं चलाया गया</string>
-    <string name="widget_open_bitchord">BitChord खोलें</string>
-    <string name="widget_preview_title">गाने का शीर्षक</string>
-    <string name="widget_preview_artist">कलाकार</string>
-    <string name="widget_pill_label">अभी चल रहा है 4×1</string>
-    <string name="widget_pill_description">ट्रैक के साथ लाइक, शफ़ल और प्लेबैक नियंत्रण, एक ही पंक्ति में।</string>
-    <string name="widget_preview_pill">गाने का शीर्षक - कलाकार</string>
     <string name="download_quality">डाउनलोड क्वालिटी</string>
     <string name="download_wifi_only">केवल Wi-Fi पर डाउनलोड करें</string>
     <string name="spatial_audio">स्पेशियल ऑडियो</string>
@@ -454,12 +438,9 @@
     <string name="sleep_timer">स्लीप टाइमर</string>
     <string name="sleep_timer_custom">कस्टम</string>
     <string name="start_sleep_timer">टाइमर शुरू करें</string>
-    <string name="sources_no_lossless">कोई भी चालू स्रोत लॉसलेस ऑडियो नहीं दे सकता। बिना ट्रांसकोडिंग के उपलब्ध लॉसलेस फ़ाइलें चलाने के लिए कस्टम मॉड्यूल जोड़ें।</string>
     <string name="sources_order_footer">अगर किसी स्रोत के पास कोई ट्रैक नहीं है या उस तक पहुंचा नहीं जा सकता, तो BitChord अगला स्रोत आज़माता है। YouTube से ऊपर के स्रोत बेहतर वर्शन मिलने पर उसकी रिकॉर्डिंग बदल सकते हैं।</string>
     <string name="sources_order_header">स्रोत, इसी क्रम में आज़माए जाते हैं</string>
     <string name="sources_quality_capped">यह कनेक्शन हाई क्वालिटी से नीचे सेट है, इसलिए स्ट्रीम को उस सीमा में फिट करने के लिए ट्रांसकोड किया जाता है। डाउनलोड पर कोई असर नहीं पड़ता।</string>
-    <string name="jiosaavn_mismatch_warning">गाने का गलत वर्शन मिल सकता है। अपने जोखिम पर चालू करें।</string>
-    <string name="enable_jiosaavn">JioSaavn चालू करें?</string>
     <string name="enable_anyway">फिर भी चालू करें</string>
     <string name="sources_subtitle">ऑडियो कहां से आता है और किस क्रम में इस्तेमाल होता है</string>
     <string name="source_matching">स्रोत मिलान</string>
@@ -785,11 +766,8 @@
 
     <string name="add_account">खाता जोड़ें</string>
 
-    <string name="add_addon">एडऑन जोड़ें</string>
 
-    <string name="add_addon_detail">BitChord को किसी एडऑन सर्वर से कनेक्ट करें</string>
 
-    <string name="addon_url_description">एडऑन का URL पेस्ट करें — रूट या manifest.json।</string>
 
     <string name="advanced_options">उन्नत विकल्प</string>
 
@@ -1260,16 +1238,12 @@
     <string name="source_downloads_on">डाउनलोड की अनुमति है</string>
     <string name="source_downloads_off">सिर्फ़ स्ट्रीमिंग</string>
     <string name="lossless_output_permission">Bluetooth कोडेक जाँचें</string>
-    <string name="lossless_output_permission_detail">आस-पास के डिवाइस की अनुमति दें ताकि LDAC या LHDC हेडफ़ोन लॉसलेस ऐड-ऑन खोल सकें</string>
     <string name="cached_songs">कैश किए गए गाने</string>
-    <string name="cached_songs_subtitle">सॉन्ग कैश में YouTube और JioSaavn के गाने</string>
-    <string name="cached_songs_empty">अभी कोई कैश किया गया गाना नहीं है। YouTube या JioSaavn से चलाए गए गाने यहाँ दिखेंगे।</string>
     <string name="cached_song_partial">आंशिक</string>
     <string name="remove_from_cache">कैश से हटाएँ</string>
     <string name="cached_song_remove">हटाएँ</string>
     <string name="removed_from_cache">गाने के कैश से हटाया गया</string>
     <string name="show_cache_folder">कैश किए गए गानों का फ़ोल्डर दिखाएँ</string>
-    <string name="show_cache_folder_subtitle">लाइब्रेरी में सॉन्ग कैश में रखे YouTube और JioSaavn गानों का फ़ोल्डर जोड़ता है</string>
     <string name="song_cache_unlimited">असीमित</string>
     <string name="song_cache_unlimited_subtitle">कोई सीमा नहीं। कैश ऑडियो स्टोरेज भरने तक बढ़ सकता है।</string>
     <string name="clear_song_cache_title">सॉन्ग कैश साफ़ करें?</string>
@@ -1311,8 +1285,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">कॉन्फ़िगर नहीं है — API URL सेट करने के लिए टैप करें</string>
     <string name="artist_signatures_test_failed">उस URL पर API तक नहीं पहुंचा जा सका</string>
-    <string name="search_source_addons">ऐडऑन</string>
-    <string name="search_addons_none">कोई ऐडऑन चालू नहीं है। सेटिंग → स्रोत में जाकर एक जोड़ें।</string>
     <string name="app_icon">ऐप आइकन</string>
     <string name="app_icon_default">डिफ़ॉल्ट</string>
     <string name="show_queue_history">कतार का इतिहास दिखाएँ</string>
@@ -1395,12 +1367,6 @@
     <string name="progressive_blur">क्रमिक ब्लर</string>
     <string name="remove_from_history">इतिहास से हटाएँ</string>
     <string name="remove_from_history_failed">इतिहास से नहीं हटाया जा सका</string>
-    <string name="addon_blocked_title">यह गाना नहीं चल सकता</string>
-    <string name="addon_blocked_quality">%1$s पर ऑडियो क्वालिटी %2$s पर सेट है। %3$s के गाने सिर्फ़ लॉसलेस में चलते हैं — इसे चलाने के लिए सेटिंग्स → ऑडियो क्वालिटी में बदलें।</string>
-    <string name="addon_blocked_watch">संगीत आपकी घड़ी से चल रहा है, जो ऑडियो को लॉसलेस से नीचे सीमित करती है। फ़ोन पर संगीत वापस आते ही %1$s के गाने फिर चलेंगे।</string>
-    <string name="download_addon_left_out_title">%1$s के बिना डाउनलोड हो रहा है</string>
-    <string name="download_addon_not_allowed">%1$s डाउनलोड की अनुमति नहीं देता, इसलिए आपके गाने आपके दूसरे सोर्स से सेव हो रहे हैं।</string>
-    <string name="download_addon_needs_lossless_output">%1$s सिर्फ़ तभी संगीत देता है जब वायर्ड, USB या LDAC-क्लास हेडफ़ोन जुड़े हों। जब तक कोई न जुड़े, डाउनलोड इसे छोड़ देते हैं, इसलिए आपके गाने आपके दूसरे सोर्स से सेव हो रहे हैं।</string>
     <string name="show_listen_together_button">साथ में सुनें बटन दिखाएँ</string>
     <string name="show_listen_together_button_subtitle">बंद होने पर, प्लेयर लिरिक्स और कतार के बीच सिर्फ़ ऑडियो आउटपुट बटन दिखाता है</string>
     <string name="font">फ़ॉन्ट</string>

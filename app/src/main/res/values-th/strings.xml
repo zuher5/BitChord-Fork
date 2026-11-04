@@ -81,7 +81,6 @@
     <string name="prefer_lossless">เลือกใช้ไฟล์ไม่สูญเสียคุณภาพก่อน</string>
     <string name="lossless_source_subtitle">FLAC และ ALAC ตรงจากแหล่งที่มา</string>
     <string name="overridden">ถูกแทนที่</string>
-    <string name="add_module_source">เพิ่มแหล่งข้อมูลโมดูล</string>
     <string name="remove_source">นำแหล่งข้อมูลนี้ออก</string>
     <string name="test">ทดสอบ</string>
     <string name="testing">กำลังทดสอบ…</string>
@@ -128,22 +127,7 @@
     <string name="source_unreachable">ตอนนี้เชื่อมต่อไม่ได้ · %1$s</string>
     <string name="checking">กำลังตรวจสอบ…</string>
     <string name="failed">ล้มเหลว</string>
-    <string name="widget_square_label">กำลังเล่น 2×2</string>
-    <string name="widget_wide_label">กำลังเล่น 4×2</string>
-    <string name="widget_square_description">ปกอัลบั้มพร้อมปุ่มควบคุมการเล่น แบบสี่เหลี่ยมจัตุรัส</string>
-    <string name="widget_wide_description">ปกอัลบั้มพร้อมชื่อเพลงและปุ่มควบคุมการเล่น ความกว้างเต็มจอ</string>
-    <string name="widget_play">เล่น</string>
-    <string name="widget_pause">หยุดชั่วคราว</string>
     <string name="widget_next">ถัดไป</string>
-    <string name="widget_previous">ก่อนหน้า</string>
-    <string name="widget_artwork">ปกอัลบั้ม</string>
-    <string name="widget_nothing_played">ยังไม่มีการเล่นเพลง</string>
-    <string name="widget_open_bitchord">เปิด BitChord</string>
-    <string name="widget_preview_title">ชื่อเพลง</string>
-    <string name="widget_preview_artist">ศิลปิน</string>
-    <string name="widget_pill_label">กำลังเล่น 4×1</string>
-    <string name="widget_pill_description">เพลงพร้อมปุ่มถูกใจ สุ่มเล่น และปุ่มควบคุมการเล่นในแถวเดียว</string>
-    <string name="widget_preview_pill">ชื่อเพลง - ศิลปิน</string>
     <string name="download_quality">คุณภาพการดาวน์โหลด</string>
     <string name="download_wifi_only">ดาวน์โหลดผ่าน Wi-Fi เท่านั้น</string>
     <string name="convert_to_audio">แปลงเป็นเสียง</string>
@@ -468,12 +452,9 @@
     <string name="sleep_timer">ตัวจับเวลาปิดเพลง</string>
     <string name="sleep_timer_custom">กำหนดเอง</string>
     <string name="start_sleep_timer">เริ่มตั้งเวลา</string>
-    <string name="sources_no_lossless">ไม่มีแหล่งข้อมูลที่เปิดใช้งานสามารถให้เสียงแบบไม่สูญเสียคุณภาพได้ เพิ่มแอดออนเพื่อเล่นไฟล์ไม่สูญเสียคุณภาพโดยไม่ต้องแปลงไฟล์</string>
     <string name="sources_order_footer">หากแหล่งข้อมูลหนึ่งไม่มีแทร็กหรือเชื่อมต่อไม่ได้ BitChord จะลองแหล่งถัดไป แหล่งข้อมูลที่อยู่เหนือ YouTube สามารถแทนที่การบันทึกของ YouTube ได้เมื่อให้เวอร์ชันที่ดีกว่า</string>
     <string name="sources_order_header">แหล่งข้อมูล เรียงตามลำดับที่ลอง</string>
     <string name="sources_quality_capped">การเชื่อมต่อนี้ตั้งไว้ต่ำกว่าคุณภาพสูง สตรีมจึงถูกแปลงให้พอดีกับขีดจำกัดนั้น การดาวน์โหลดไม่ได้รับผลกระทบ</string>
-    <string name="jiosaavn_mismatch_warning">อาจจับคู่กับเพลงผิดเวอร์ชัน เปิดใช้โดยยอมรับความเสี่ยงเอง</string>
-    <string name="enable_jiosaavn">เปิดใช้ JioSaavn หรือไม่</string>
     <string name="enable_anyway">เปิดใช้ต่อไป</string>
     <string name="sources_subtitle">เสียงมาจากที่ใดและลำดับที่ใช้</string>
     <string name="source_matching">การจับคู่แหล่งที่มา</string>
@@ -944,9 +925,7 @@
 
     <string name="legacy_mesh_gradient_subtitle">Brings back the drifting colour blobs behind the player from v1.5</string>
 
-    <string name="add_addon">Add an addon</string>
 
-    <string name="add_addon_detail">Point BitChord at an addon server you host or were given a link to</string>
 
     <string name="translation_language">Translation language</string>
 
@@ -1041,7 +1020,6 @@
 
     <string name="paxsenix_api_key_missing">PaxSenix API key — optional, not configured</string>
 
-    <string name="addon_url_description">Paste the addon’s URL — either its root or its manifest.json. BitChord reads what it can search and stream, then asks it for tracks over plain HTTP.</string>
 
     <string name="sort_date_added_oldest">Date added (oldest first)</string>
 
@@ -1243,16 +1221,12 @@
     <string name="source_downloads_on">อนุญาตให้ดาวน์โหลด</string>
     <string name="source_downloads_off">สตรีมมิงเท่านั้น</string>
     <string name="lossless_output_permission">ตรวจสอบตัวแปลงสัญญาณ Bluetooth</string>
-    <string name="lossless_output_permission_detail">อนุญาตอุปกรณ์ใกล้เคียงเพื่อให้หูฟัง LDAC หรือ LHDC ปลดล็อกส่วนเสริมแบบ lossless</string>
     <string name="cached_songs">เพลงในแคช</string>
-    <string name="cached_songs_subtitle">เพลงจาก YouTube และ JioSaavn ในแคชเพลง</string>
-    <string name="cached_songs_empty">ยังไม่มีเพลงในแคช เพลงที่คุณเล่นจาก YouTube หรือ JioSaavn จะแสดงที่นี่</string>
     <string name="cached_song_partial">บางส่วน</string>
     <string name="remove_from_cache">นำออกจากแคช</string>
     <string name="cached_song_remove">นำออก</string>
     <string name="removed_from_cache">นำออกจากแคชเพลงแล้ว</string>
     <string name="show_cache_folder">แสดงโฟลเดอร์เพลงในแคช</string>
-    <string name="show_cache_folder_subtitle">เพิ่มโฟลเดอร์ในคลังเพลงที่มีเพลงจาก YouTube และ JioSaavn ที่เก็บไว้ในแคช</string>
     <string name="song_cache_unlimited">ไม่จำกัด</string>
     <string name="song_cache_unlimited_subtitle">ไม่มีขีดจำกัด เสียงในแคชอาจเพิ่มขึ้นจนพื้นที่จัดเก็บเต็ม</string>
     <string name="clear_song_cache_title">ล้างแคชเพลงใช่ไหม</string>
@@ -1294,8 +1268,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">ยังไม่ได้กำหนดค่า — แตะเพื่อตั้งค่า URL API</string>
     <string name="artist_signatures_test_failed">ไม่สามารถเข้าถึง API ที่ URL นี้ได้</string>
-    <string name="search_source_addons">แอดออน</string>
-    <string name="search_addons_none">ยังไม่ได้เปิดใช้แอดออน เพิ่มได้ที่ การตั้งค่า → แหล่งที่มา</string>
     <string name="app_icon">ไอคอนแอป</string>
     <string name="app_icon_default">ค่าเริ่มต้น</string>
     <string name="show_queue_history">แสดงประวัติคิว</string>
@@ -1378,12 +1350,6 @@
     <string name="progressive_blur">เบลอแบบไล่ระดับ</string>
     <string name="remove_from_history">นำออกจากประวัติ</string>
     <string name="remove_from_history_failed">นำออกจากประวัติไม่ได้</string>
-    <string name="addon_blocked_title">เล่นเพลงนี้ไม่ได้</string>
-    <string name="addon_blocked_quality">คุณภาพเสียงบน %1$s ตั้งไว้ที่ %2$s เพลงจาก %3$s เล่นได้เฉพาะแบบไม่สูญเสียคุณภาพ — เปลี่ยนได้ที่ การตั้งค่า → คุณภาพเสียง เพื่อเล่นเพลงนี้</string>
-    <string name="addon_blocked_watch">เพลงกำลังเล่นผ่านนาฬิกาของคุณ ซึ่งจำกัดเสียงให้ต่ำกว่าแบบไม่สูญเสียคุณภาพ เพลงจาก %1$s จะเล่นได้อีกครั้งเมื่อโทรศัพท์กลับมาเล่นเพลง</string>
-    <string name="download_addon_left_out_title">กำลังดาวน์โหลดโดยไม่ใช้ %1$s</string>
-    <string name="download_addon_not_allowed">%1$s ไม่อนุญาตให้ดาวน์โหลด เพลงของคุณจึงถูกบันทึกจากแหล่งอื่นแทน</string>
-    <string name="download_addon_needs_lossless_output">%1$s ให้บริการเพลงเฉพาะเมื่อเชื่อมต่อหูฟังแบบมีสาย USB หรือระดับ LDAC เท่านั้น การดาวน์โหลดจะข้ามไปจนกว่าจะเชื่อมต่อ เพลงของคุณจึงถูกบันทึกจากแหล่งอื่นแทน</string>
     <string name="show_listen_together_button">แสดงปุ่มฟังด้วยกัน</string>
     <string name="show_listen_together_button_subtitle">เมื่อปิด เครื่องเล่นจะแสดงเฉพาะปุ่มเอาต์พุตเสียงระหว่างเนื้อเพลงกับคิว</string>
     <string name="font">ฟอนต์</string>

@@ -84,7 +84,6 @@
     <string name="prefer_lossless">Ưu tiên Lossless</string>
     <string name="lossless_source_subtitle">FLAC và ALAC trực tiếp từ nguồn gốc</string>
     <string name="overridden">Đã ghi đè</string>
-    <string name="add_module_source">Thêm nguồn module</string>
     <string name="remove_source">Xóa nguồn này</string>
     <string name="test">Kiểm tra</string>
     <string name="testing">Đang kiểm tra…</string>
@@ -134,22 +133,7 @@
     <string name="source_unreachable">Hiện không thể truy cập · %1$s</string>
     <string name="checking">Đang kiểm tra…</string>
     <string name="failed">Thất bại</string>
-    <string name="widget_square_label">Đang phát 2×2</string>
-    <string name="widget_wide_label">Đang phát 4×2</string>
-    <string name="widget_square_description">Ảnh bìa album kèm các nút điều khiển, dạng hình vuông.</string>
-    <string name="widget_wide_description">Ảnh bìa album kèm tên bản nhạc và điều khiển, toàn chiều rộng.</string>
-    <string name="widget_play">Phát</string>
-    <string name="widget_pause">Tạm dừng</string>
     <string name="widget_next">Tiếp theo</string>
-    <string name="widget_previous">Trước</string>
-    <string name="widget_artwork">Ảnh bìa album</string>
-    <string name="widget_nothing_played">Chưa phát bài nào</string>
-    <string name="widget_open_bitchord">Mở BitChord</string>
-    <string name="widget_preview_title">Tên bài hát</string>
-    <string name="widget_preview_artist">Nghệ sĩ</string>
-    <string name="widget_pill_label">Đang phát 4×1</string>
-    <string name="widget_pill_description">Bản nhạc kèm Thích, trộn bài và điều khiển phát trên một hàng.</string>
-    <string name="widget_preview_pill">Tên bài hát - Nghệ sĩ</string>
     <string name="download_quality">Chất lượng tải xuống</string>
     <string name="download_wifi_only">Chỉ tải xuống qua Wi-Fi</string>
     <string name="convert_to_audio">Chuyển đổi thành âm thanh</string>
@@ -299,8 +283,6 @@
     <string name="activity_name_message">Nội dung theo sau động từ trên hồ sơ. Để trống để sử dụng %1$s.</string>
     <string name="activity_playing">Đang phát</string>
     <string name="activity_watching">Đang xem</string>
-    <string name="add_addon">Thêm tiện ích mở rộng</string>
-    <string name="add_addon_detail">Trỏ BitChord tới máy chủ tiện ích bạn tự lưu trữ hoặc được chia sẻ liên kết</string>
     <string name="add_to_queue">Thêm vào hàng đợi</string>
     <string name="after_this_song">Sau bài hát này</string>
     <string name="always_on">Luôn bật</string>
@@ -431,7 +413,6 @@
     <string name="max_delay_subtitle">Độ trễ scrobble tối đa tính bằng giây</string>
     <string name="min_song_duration">Thời lượng bài hát tối thiểu</string>
     <string name="min_song_duration_subtitle">Các bài hát ngắn hơn sẽ không được scrobble</string>
-    <string name="addon_url_description">Dán URL của tiện ích mở rộng — đường dẫn gốc hoặc manifest.json. BitChord sẽ đọc các mục có thể tìm kiếm và phát, sau đó yêu cầu bản nhạc qua giao thức HTTP tiêu chuẩn.</string>
     <string name="monthly_listeners">%1$s người nghe hàng tháng</string>
     <string name="name">Tên</string>
     <string name="no_playlists_yet">Chưa có danh sách phát nào. Dùng hàng bên trên để tạo danh sách phát.</string>
@@ -484,7 +465,6 @@
     <string name="sleep_timer">Hẹn giờ tắt</string>
     <string name="sleep_timer_custom">Tùy chỉnh</string>
     <string name="start_sleep_timer">Bắt đầu hẹn giờ</string>
-    <string name="sources_no_lossless">Không có nguồn nào được bật có thể cung cấp âm thanh Lossless. Hãy thêm tiện ích mở rộng để phát các tệp Lossless mà không cần chuyển mã.</string>
     <string name="sources_order_footer">Nếu một nguồn không có bản nhạc hoặc không thể kết nối, BitChord sẽ thử nguồn tiếp theo. Các nguồn nằm trên YouTube có thể thay thế bản ghi âm của YouTube khi tìm được phiên bản tốt hơn.</string>
     <string name="sources_order_header">Các nguồn nhạc, được thử theo thứ tự này</string>
     <string name="sources_quality_capped">Kết nối này được đặt dưới chất lượng Cao, vì vậy luồng phát sẽ được chuyển mã để phù hợp giới hạn đó. Việc tải xuống không bị ảnh hưởng.</string>
@@ -921,8 +901,6 @@
 
     <string name="translation_language_subtitle">Follows the app language</string>
 
-    <string name="jiosaavn_mismatch_warning">Có thể khớp nhầm phiên bản bài hát. Hãy tự chịu rủi ro khi bật.</string>
-    <string name="enable_jiosaavn">Bật JioSaavn?</string>
     <string name="enable_anyway">Vẫn bật</string>
 
     <string name="search_languages">Search languages</string>
@@ -1177,16 +1155,12 @@
     <string name="source_downloads_on">Cho phép tải xuống</string>
     <string name="source_downloads_off">Chỉ phát trực tuyến</string>
     <string name="lossless_output_permission">Kiểm tra codec Bluetooth</string>
-    <string name="lossless_output_permission_detail">Cho phép Thiết bị lân cận để tai nghe LDAC hoặc LHDC mở khóa addon lossless</string>
     <string name="cached_songs">Bài hát đã lưu bộ nhớ đệm</string>
-    <string name="cached_songs_subtitle">Bài hát từ YouTube và JioSaavn trong bộ nhớ đệm</string>
-    <string name="cached_songs_empty">Chưa có bài hát nào trong bộ nhớ đệm. Bài hát bạn phát từ YouTube hoặc JioSaavn sẽ hiện ở đây.</string>
     <string name="cached_song_partial">Một phần</string>
     <string name="remove_from_cache">Xóa khỏi bộ nhớ đệm</string>
     <string name="cached_song_remove">Xóa</string>
     <string name="removed_from_cache">Đã xóa khỏi bộ nhớ đệm bài hát</string>
     <string name="show_cache_folder">Hiện thư mục bài hát trong bộ nhớ đệm</string>
-    <string name="show_cache_folder_subtitle">Thêm vào Thư viện một thư mục chứa các bài hát YouTube và JioSaavn được lưu trong bộ nhớ đệm</string>
     <string name="song_cache_unlimited">Không giới hạn</string>
     <string name="song_cache_unlimited_subtitle">Không giới hạn. Âm thanh trong bộ nhớ đệm có thể tăng cho đến khi đầy bộ nhớ.</string>
     <string name="clear_song_cache_title">Xóa bộ nhớ đệm bài hát?</string>
@@ -1228,8 +1202,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">Chưa được định cấu hình — nhấn để đặt URL API</string>
     <string name="artist_signatures_test_failed">Không thể kết nối tới API tại URL này</string>
-    <string name="search_source_addons">Addon</string>
-    <string name="search_addons_none">Chưa bật addon nào. Hãy thêm một addon trong Cài đặt → Nguồn.</string>
     <string name="app_icon">Biểu tượng ứng dụng</string>
     <string name="app_icon_default">Mặc định</string>
     <string name="show_queue_history">Hiện lịch sử hàng đợi</string>
@@ -1312,12 +1284,6 @@
     <string name="progressive_blur">Làm mờ dần</string>
     <string name="remove_from_history">Xóa khỏi lịch sử</string>
     <string name="remove_from_history_failed">Không thể xóa khỏi lịch sử</string>
-    <string name="addon_blocked_title">Không thể phát bài hát này</string>
-    <string name="addon_blocked_quality">Chất lượng âm thanh khi dùng %1$s đang đặt là %2$s. Bài hát từ %3$s chỉ phát ở Lossless — hãy đổi trong Cài đặt → Chất lượng âm thanh để phát bài này.</string>
-    <string name="addon_blocked_watch">Nhạc đang phát qua đồng hồ của bạn, vốn giới hạn âm thanh dưới Lossless. Bài hát từ %1$s sẽ phát lại khi điện thoại lấy lại quyền phát nhạc.</string>
-    <string name="download_addon_left_out_title">Đang tải xuống không dùng %1$s</string>
-    <string name="download_addon_not_allowed">%1$s không cho phép tải xuống, nên bài hát của bạn được lưu từ các nguồn khác.</string>
-    <string name="download_addon_needs_lossless_output">%1$s chỉ phát nhạc khi có tai nghe có dây, USB hoặc chuẩn LDAC được kết nối. Lượt tải xuống sẽ bỏ qua nó cho đến khi có tai nghe như vậy, nên bài hát của bạn được lưu từ các nguồn khác.</string>
     <string name="show_listen_together_button">Hiện nút Listen together</string>
     <string name="show_listen_together_button_subtitle">Khi tắt, trình phát chỉ hiện nút đầu ra âm thanh giữa lời bài hát và hàng đợi</string>
     <string name="font">Phông chữ</string>

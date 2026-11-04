@@ -8,42 +8,11 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <!-- Saving a track to Music outlives the screen it was asked from. -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Touch feedback. The system's own haptics switch is honoured on top of
          this, so granting it doesn't override a user who turned buzzing off. -->
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!-- Bit-perfect output: setting Android 14's preferred mixer attributes
-         for a USB DAC. A normal permission, granted at install. -->
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
-
-    <!--
-      Asked for only when the output picker is first opened, and only on API 31+
-      where it exists. Without it a paired headset is listed by the audio
-      framework under a generic name rather than its own, which turns a list of
-      places to send the music into a list of things called "Bluetooth".
-      Everything else in the app works without it.
-    -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <!--
-      BLUETOOTH_CONNECT's predecessor, granted at install: what reads a paired
-      device's class below API 31, so the player can draw a speaker for a
-      speaker. See AudioRouting.formOf.
-    -->
-    <uses-permission
-        android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" />
-
-    <!--
-      In-app updates: handing a downloaded APK to the system installer. The
-      per-app "install unknown apps" switch is still the user's to flip; this
-      only lets the request reach the installer.
-    -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- Reading local audio files across the device -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
@@ -214,29 +183,6 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="youtu.be" />
-            </intent-filter>
-
-            <!-- Public Listen Together invites. autoVerify makes a tap open
-                 BitChord directly once the domain publishes its assetlinks
-                 association for the production signing certificate. -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="bitchord.kushagrasingh.in"
-                    android:pathPattern="/invite/......" />
-            </intent-filter>
-
-            <!-- Custom scheme for Listen Together invites on custom server deployments. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="bitchord"
-                    android:host="party" />
             </intent-filter>
 
             <!--
@@ -608,31 +554,6 @@
             </intent-filter>
         </service>
 
-        <!--
-          Commands from the BitChord watch app (wearos/). Exported because Play
-          services binds it; only messages from the same package and signing key
-          on a paired watch are ever delivered, and only under this path.
-        -->
-        <service
-            android:name=".wear.WearCommandService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/bitchord/command"
-                    android:scheme="wear" />
-            </intent-filter>
-            <!-- The watch's player reading a track through the phone. -->
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/bitchord/stream"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
         <receiver
             android:name="androidx.media3.session.MediaButtonReceiver"
             android:exported="true">
@@ -640,117 +561,6 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
-        <!--
-          Downloads. Not exported: it is started by the app and by its own
-          cancel action, and nothing outside has any business queueing work.
-        -->
-        <service
-            android:name=".download.DownloadService"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
-        <!-- The tap on a "new songs in this playlist" notification. See PlaylistSync. -->
-        <receiver
-            android:name=".download.PlaylistSyncApproval"
-            android:exported="false" />
-
-        <!--
-          WorkManager comes up on first use instead of at every launch, since the
-          one thing using it is a setting that is off by default.
-        -->
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
-        </provider>
-
-        <!--
-          Home-screen widgets. Two providers so the picker lists a 2×2 and a 4×2,
-          both of which are the same widget resized — see MediaWidget.
-
-          Not exported, which is correct for a widget provider despite the
-          launcher being the one that talks to it: the system delivers
-          APPWIDGET_UPDATE to providers regardless, and the button PendingIntents
-          are sent with this app's own identity. Exporting them would only make
-          the update broadcast reachable by anything on the device.
-        -->
-        <receiver
-            android:name=".widget.MediaWidgetSquare"
-            android:exported="false"
-            android:label="@string/widget_square_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_media_square" />
-        </receiver>
-
-        <receiver
-            android:name=".widget.MediaWidgetWide"
-            android:exported="false"
-            android:label="@string/widget_wide_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_media_wide" />
-        </receiver>
-
-        <!-- The 4×1 capsule. Its own provider and layout; see MediaWidgetPill. -->
-        <receiver
-            android:name=".widget.MediaWidgetPill"
-            android:exported="false"
-            android:label="@string/widget_pill_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_media_pill" />
-        </receiver>
-
-        <!-- The transport buttons. Reached only by this app's own PendingIntents. -->
-        <receiver
-            android:name=".widget.MediaWidgetActions"
-            android:exported="false" />
-
-        <!--
-          Hands the Replay poster to whichever app the user picks to send it
-          with. The authority is derived from the applicationId rather than
-          written out, because the dev and prod flavours are two packages that
-          can be installed side by side — a fixed authority would make the
-          second install fail outright with INSTALL_FAILED_CONFLICTING_PROVIDER.
-
-          Not exported, and grantUriPermissions is the whole mechanism: the
-          receiving app gets a read grant that arrives with the intent, covers
-          one file (see @xml/file_paths) and expires with it.
-
-          Also serves the downloaded update APK to the system installer
-          without it needing broad storage access — its own cache-only scope,
-          nothing else shared through it.
-        -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
-        <!-- Where the Cast framework asks how this app wants to cast. -->
-        <meta-data
-            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.music.bitchord.playback.cast.CastOptionsProvider" />
     </application>
 
 </manifest>

@@ -87,7 +87,7 @@ class PlayerQualityMenuTest {
     /** A cached substitute is still a substitute, and keeps the revert row. */
     @Test
     fun `a track replayed from a substitute's cached copy keeps its revert row`() {
-        listOf(AudioCache.Origin.JIOSAAVN, AudioCache.Origin.OTHER).forEach { origin ->
+        listOf(AudioCache.Origin.OTHER).forEach { origin ->
             assertFalse(
                 QualityUpgrade.isKnownToBePlayingYouTubesOwn(videoId, rendition = null, cachedOrigin = origin),
             )

@@ -1,7 +1,6 @@
 package com.music.bitchord.playback
 
 import androidx.media3.common.Player
-import com.music.bitchord.data.listentogether.PartyTrack
 import com.music.bitchord.data.model.QueueTier
 import com.music.bitchord.data.model.Song
 
@@ -43,17 +42,6 @@ object QueueCoordinator {
         tappedSong: Song,
         source: QueueSource,
     ): List<Song> = QueueTimeline.buildOneOffQueue(currentTimeline, currentIndex, tappedSong, source)
-
-    /** @see QueueTimeline.buildPartyPlaybackQueue */
-    fun buildPartyPlaybackQueue(
-        tappedSong: Song,
-        source: QueueSource,
-        upcomingPartyTracks: List<PartyTrack>,
-    ): List<Song> = QueueTimeline.buildPartyPlaybackQueue(
-        tappedSong,
-        source,
-        upcomingPartyTracks.map { it.toSong() },
-    )
 
     /** @see QueueTimeline.findUserQueueInsertionIndex */
     fun findUserQueueInsertionIndex(

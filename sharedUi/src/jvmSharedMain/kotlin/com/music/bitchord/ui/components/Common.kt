@@ -99,8 +99,6 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.music.bitchord.data.model.ROW_ART_PX
 import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.isMatchPending
-import com.music.bitchord.data.model.isMatchMissing
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material3.CircularProgressIndicator
 import com.music.bitchord.data.model.artworkAt
@@ -526,10 +524,11 @@ private fun SongRowContent(
         targetValue = if ((isCurrent && !searchPlayingStyle) || selected) activeTint.copy(alpha = 0.14f) else Color.Transparent,
         label = "song row background",
     )
-    // A Spotify track still being matched to a YouTube Music song, or one that
-    // has no match: shown, but not something a tap or a menu can act on.
-    val matching = song.isMatchPending
-    val unavailable = song.isMatchMissing
+    // Spotify was removed from this fork, so no row is ever a pending or
+    // unmatched match — kept as constants so the dimmed-row rendering below
+    // stays readable without carrying dead branches.
+    val matching = false
+    val unavailable = false
     Row(
         modifier = modifier
             .fillMaxWidth()

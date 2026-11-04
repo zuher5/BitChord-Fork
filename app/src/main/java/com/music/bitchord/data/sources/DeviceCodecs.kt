@@ -5,7 +5,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.mediacodec.MediaCodecUtil
 import com.music.bitchord.data.TrackLog
 import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.playback.audio.bitperfect.BitPerfectOutput
 import java.util.Locale
 
 /**
@@ -82,9 +81,8 @@ object DeviceCodecs {
 
     /**
      * Test seam, and the field override of last resort. The decision that
-     * depends on this lives in [ModuleSource.unplayable] and is tested
-     * directly; this exists so a caller can stand in for a device without a
-     * decoder.
+     * depends on this is tested directly; this exists so a caller can stand in
+     * for a device without a decoder.
      */
     @Volatile
     internal var forced: Boolean? = null
@@ -101,19 +99,14 @@ object DeviceCodecs {
 
     /**
      * Whether sources should be asked for Dolby Atmos at all: this phone can
-     * decode it, the listener has it on, and no bit-perfect output is ready
-     * to take the music. Bit-perfect output carries stereo PCM only and
-     * bypasses the mixer where Atmos is rendered, so an Atmos track would
-     * only fall back to normal output; the stereo lossless version plays
-     * bit-perfect instead.
+     * decode it and the listener has it on.
      */
     val atmosWanted: Boolean
-        get() = playsDolbyAtmos && AppSettings.dolbyAtmos.value && !BitPerfectOutput.ready.value
+        get() = playsDolbyAtmos && AppSettings.dolbyAtmos.value
 
     /** Why [atmosWanted] is false, for logs. */
     fun atmosRefusal(): String = when {
         !playsDolbyAtmos -> "which this device has no decoder for"
-        BitPerfectOutput.ready.value -> "which bit-perfect output cannot carry"
         else -> "which is switched off in Settings"
     }
 

@@ -5,18 +5,17 @@ import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.permits
 import com.music.bitchord.data.sources.SourceKind
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
  * Which sources each streaming ceiling pays for — the rule every playback
  * walk filters on, and the one a lowered ceiling has to take back from
- * whatever was already pinned or found under the old one.
+ * whatever was already pinned or found under the old one. YouTube is the only
+ * kind left, so the ceiling's job reduces to capping its ladder on the lower
+ * rungs and never refusing it above them.
  */
 class AudioQualityCeilingTest {
-
-    private val lossless = SourceKind.entries.filter { it.canServeLossless }
 
     @Test
     fun `lossless asks every source`() {
@@ -24,10 +23,8 @@ class AudioQualityCeilingTest {
     }
 
     @Test
-    fun `high skips every source that can serve lossless and keeps JioSaavn`() {
-        lossless.forEach { assertFalse(it.name, AudioQuality.HIGH.permits(it)) }
-        assertTrue(AudioQuality.HIGH.permits(SourceKind.JIOSAAVN))
-        assertTrue(AudioQuality.HIGH.permits(SourceKind.YOUTUBE))
+    fun `high keeps every kind left`() {
+        SourceKind.entries.forEach { assertTrue(it.name, AudioQuality.HIGH.permits(it)) }
     }
 
     @Test

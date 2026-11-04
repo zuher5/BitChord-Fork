@@ -30,14 +30,6 @@
     <string name="downloaded_songs">Downloaded songs</string>
     <string name="local_music">Local Music</string>
     <string name="search_source_youtube" translatable="false">YouTube</string>
-    <string name="search_source_addons">Addons</string>
-    <string name="search_addons_none">No addons are enabled. Add one in Settings → Sources.</string>
-    <string name="addon_blocked_title">Can\'t play this song</string>
-    <string name="addon_blocked_quality">Audio quality on %1$s is set to %2$s. Songs from %3$s only play at Lossless — change it in Settings → Audio quality to play this one.</string>
-    <string name="addon_blocked_watch">Music is playing through your watch, which limits audio below Lossless. Songs from %1$s play again once your phone takes the music back.</string>
-    <string name="download_addon_left_out_title">Downloading without %1$s</string>
-    <string name="download_addon_not_allowed">%1$s doesn\'t allow downloads, so your songs are being saved from your other sources instead.</string>
-    <string name="download_addon_needs_lossless_output">%1$s only serves music while wired, USB or LDAC-class headphones are connected. Downloads skip it until one is, so your songs are being saved from your other sources instead.</string>
     <string name="audio_files_on_device">Audio files on device</string>
     <string name="on_device">On Device</string>
     <string name="playlists">Playlists</string>
@@ -120,7 +112,6 @@
     <string name="prefer_lossless">Prefer lossless</string>
     <string name="lossless_source_subtitle">FLAC and ALAC straight from the source</string>
     <string name="overridden">Overridden</string>
-    <string name="add_module_source">Add a module source</string>
     <string name="remove_source">Remove this source</string>
     <string name="test">Test</string>
     <string name="testing">Testing…</string>
@@ -178,22 +169,7 @@
     <string name="source_unreachable">Can’t reach it right now · %1$s</string>
     <string name="checking">Checking…</string>
     <string name="failed">Failed</string>
-    <string name="widget_square_label">Now playing 2×2</string>
-    <string name="widget_wide_label">Now playing 4×2</string>
-    <string name="widget_square_description">Album art with playback controls, in a square.</string>
-    <string name="widget_wide_description">Album art with the track and playback controls, full width.</string>
-    <string name="widget_play">Play</string>
-    <string name="widget_pause">Pause</string>
     <string name="widget_next">Next</string>
-    <string name="widget_previous">Previous</string>
-    <string name="widget_artwork">Album art</string>
-    <string name="widget_nothing_played">Nothing played yet</string>
-    <string name="widget_open_bitchord">Open BitChord</string>
-    <string name="widget_preview_title">Song title</string>
-    <string name="widget_preview_artist">Artist</string>
-    <string name="widget_pill_label">Now playing 4×1</string>
-    <string name="widget_pill_description">The track with Like, Shuffle and playback controls, in a single row.</string>
-    <string name="widget_preview_pill">Song title - Artist</string>
     <string name="download_quality">Download quality</string>
     <string name="download_wifi_only">Download over Wi-Fi only</string>
     <string name="convert_to_audio">Convert to audio</string>
@@ -426,8 +402,6 @@
     <string name="activity_name_message">What follows the verb on the profile. Leave it empty to use %1$s.</string>
     <string name="activity_playing">Playing</string>
     <string name="activity_watching">Watching</string>
-    <string name="add_addon">Add an addon</string>
-    <string name="add_addon_detail">Point BitChord at an addon server you host or were given a link to</string>
     <string name="add_to_queue">Add to queue</string>
     <string name="after_this_song">After this song</string>
     <string name="always_on">Always on</string>
@@ -628,7 +602,6 @@
     <string name="max_delay_subtitle">Maximum scrobble delay in seconds</string>
     <string name="min_song_duration">Minimum song duration</string>
     <string name="min_song_duration_subtitle">Shorter songs will not scrobble</string>
-    <string name="addon_url_description">Paste the addon’s URL — either its root or its manifest.json. BitChord reads what it can search and stream, then asks it for tracks over plain HTTP.</string>
     <string name="monthly_listeners">%1$s monthly listeners</string>
     <string name="name">Name</string>
     <string name="no_playlists_yet">No playlists yet. Use the row above to create one.</string>
@@ -681,12 +654,9 @@
     <string name="sleep_timer">Sleep timer</string>
     <string name="sleep_timer_custom">Custom</string>
     <string name="start_sleep_timer">Start timer</string>
-    <string name="sources_no_lossless">No enabled source can provide lossless audio. Add an addon to play lossless files without transcoding.</string>
     <string name="sources_order_footer">If a source does not have a track or cannot be reached, BitChord tries the next one. Sources above YouTube can replace its recording when they return a better version.</string>
     <string name="sources_order_header">Sources, tried in this order</string>
     <string name="sources_quality_capped">This connection is set below High quality, so streams are transcoded to fit that limit. Downloads are unaffected.</string>
-    <string name="jiosaavn_mismatch_warning">May match the wrong version of a song. Enable at your own risk.</string>
-    <string name="enable_jiosaavn">Enable JioSaavn?</string>
     <string name="enable_anyway">Enable anyway</string>
     <string name="sources_subtitle">Where audio comes from and the order used</string>
     <string name="source_matching">Source matching</string>
@@ -1199,10 +1169,7 @@
     <string name="lossless_output_permission">Check Bluetooth codec</string>
     <string name="lossless_output_permission_denied">Nearby devices permission is off</string>
     <string name="lossless_output_permission_denied_detail">Tap to open Settings and allow Nearby devices — without it we can’t read your Bluetooth codec</string>
-    <string name="lossless_output_permission_detail">Allow Nearby devices so LDAC, LHDC or Samsung UHQ headphones can unlock lossless-only addons</string>
     <string name="cached_songs">Cached songs</string>
-    <string name="cached_songs_subtitle">Songs from YouTube and JioSaavn in the song cache</string>
-    <string name="cached_songs_empty">No cached songs yet. Songs you play from YouTube or JioSaavn will show up here.</string>
     <string name="cached_song_partial">Partial</string>
     <string name="remove_from_cache">Remove from cache</string>
     <string name="remove_from_history">Remove from history</string>
@@ -1210,7 +1177,6 @@
     <string name="cached_song_remove">Remove</string>
     <string name="removed_from_cache">Removed from the song cache</string>
     <string name="show_cache_folder">Show cached songs folder</string>
-    <string name="show_cache_folder_subtitle">Adds a Cached songs folder to Library with the YouTube and JioSaavn songs kept in the song cache</string>
     <string name="song_cache_unlimited">Unlimited</string>
     <string name="song_cache_unlimited_subtitle">No limit. Cached audio can keep growing until your storage is full.</string>
     <string name="clear_song_cache_title">Clear song cache?</string>

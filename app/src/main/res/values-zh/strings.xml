@@ -78,7 +78,6 @@
     <string name="prefer_lossless">优先使用无损</string>
     <string name="lossless_source_subtitle">直接从来源获取 FLAC 和 ALAC</string>
     <string name="overridden">已覆盖</string>
-    <string name="add_module_source">添加模块来源</string>
     <string name="remove_source">移除此来源</string>
     <string name="test">测试</string>
     <string name="testing">测试中…</string>
@@ -120,22 +119,7 @@
     <string name="source_unreachable">目前无法访问 · %1$s</string>
     <string name="checking">正在检查…</string>
     <string name="failed">失败</string>
-    <string name="widget_square_label">正在播放 2×2</string>
-    <string name="widget_wide_label">正在播放 4×2</string>
-    <string name="widget_square_description">带有播放控件的正方形专辑封面。</string>
-    <string name="widget_wide_description">带有曲目和播放控件的全宽专辑封面。</string>
-    <string name="widget_play">播放</string>
-    <string name="widget_pause">暂停</string>
     <string name="widget_next">下一首</string>
-    <string name="widget_previous">上一首</string>
-    <string name="widget_artwork">专辑封面</string>
-    <string name="widget_nothing_played">尚未播放任何内容</string>
-    <string name="widget_open_bitchord">打开 BitChord</string>
-    <string name="widget_preview_title">歌曲标题</string>
-    <string name="widget_preview_artist">艺人</string>
-    <string name="widget_pill_label">正在播放 4×1</string>
-    <string name="widget_pill_description">单行显示曲目，以及喜欢、随机播放和播放控件。</string>
-    <string name="widget_preview_pill">歌曲标题 - 艺人</string>
     <string name="download_quality">下载质量</string>
     <string name="download_wifi_only">仅通过 Wi-Fi 下载</string>
     <string name="spatial_audio">空间音频</string>
@@ -440,12 +424,9 @@
     <string name="sleep_timer">睡眠定时器</string>
     <string name="sleep_timer_custom">自定义</string>
     <string name="start_sleep_timer">开始计时</string>
-    <string name="sources_no_lossless">已启用的来源均无法提供无损音频。添加自定义模块即可播放可用的无损文件，而无需转码。</string>
     <string name="sources_order_footer">如果某个来源没有该曲目或无法访问，BitChord 会尝试下一个来源。排在 YouTube 之前的来源如果返回更好的版本，可以替换其录音。</string>
     <string name="sources_order_header">来源，按此顺序尝试</string>
     <string name="sources_quality_capped">此连接的设置低于高品质，因此串流会被转码以符合该限制，下载不受影响。</string>
-    <string name="jiosaavn_mismatch_warning">可能匹配到歌曲的错误版本。启用风险自负。</string>
-    <string name="enable_jiosaavn">启用 JioSaavn？</string>
     <string name="enable_anyway">仍然启用</string>
     <string name="sources_subtitle">音频的来源及使用顺序</string>
     <string name="source_matching">来源匹配</string>
@@ -764,11 +745,8 @@
 
     <string name="add_account">添加账号</string>
 
-    <string name="add_addon">添加插件</string>
 
-    <string name="add_addon_detail">将 BitChord 指向你自建或获取链接的插件服务器</string>
 
-    <string name="addon_url_description">粘贴插件网址 — 根目录或 manifest.json 均可。BitChord 会读取其搜索和流式播放内容，并通过标准 HTTP 请求曲目。</string>
 
     <string name="advanced_options">高级选项</string>
 
@@ -1237,16 +1215,12 @@
     <string name="source_downloads_on">允许下载</string>
     <string name="source_downloads_off">仅限在线播放</string>
     <string name="lossless_output_permission">检查蓝牙编解码器</string>
-    <string name="lossless_output_permission_detail">允许“附近的设备”权限，LDAC 或 LHDC 耳机即可解锁仅限无损的插件</string>
     <string name="cached_songs">已缓存的歌曲</string>
-    <string name="cached_songs_subtitle">歌曲缓存中的 YouTube 和 JioSaavn 歌曲</string>
-    <string name="cached_songs_empty">还没有已缓存的歌曲。你从 YouTube 或 JioSaavn 播放的歌曲会显示在这里。</string>
     <string name="cached_song_partial">部分</string>
     <string name="remove_from_cache">从缓存中移除</string>
     <string name="cached_song_remove">移除</string>
     <string name="removed_from_cache">已从歌曲缓存中移除</string>
     <string name="show_cache_folder">显示已缓存歌曲文件夹</string>
-    <string name="show_cache_folder_subtitle">在资料库中添加一个文件夹，列出歌曲缓存中保存的 YouTube 和 JioSaavn 歌曲</string>
     <string name="song_cache_unlimited">无限制</string>
     <string name="song_cache_unlimited_subtitle">无上限。缓存的音频会一直增长，直到存储空间用完。</string>
     <string name="clear_song_cache_title">清除歌曲缓存？</string>
@@ -1282,8 +1256,6 @@
     <string name="spotify_sign_in">使用 Spotify 登录</string>
     <string name="spotify_use_spdc_token">使用 sp_dc 令牌</string>
     <string name="spotify_track_unavailable">在 YouTube Music 上找不到该歌曲</string>
-    <string name="search_source_addons">插件</string>
-    <string name="search_addons_none">未启用任何插件。请在“设置 → 音源”中添加。</string>
     <string name="app_icon">应用图标</string>
     <string name="app_icon_default">默认</string>
     <string name="show_queue_history">显示队列历史</string>
@@ -1372,12 +1344,6 @@
     <string name="progressive_blur">渐进模糊</string>
     <string name="remove_from_history">从历史记录中移除</string>
     <string name="remove_from_history_failed">无法从历史记录中移除</string>
-    <string name="addon_blocked_title">无法播放这首歌</string>
-    <string name="addon_blocked_quality">%1$s 下的音频质量设为%2$s。来自 %3$s 的歌曲仅以无损播放——请在 设置 → 音频质量 中更改后再播放。</string>
-    <string name="addon_blocked_watch">音乐正通过你的手表播放，手表会将音频限制在无损以下。手机重新接管播放后，来自 %1$s 的歌曲即可再次播放。</string>
-    <string name="download_addon_left_out_title">正在下载（不使用 %1$s）</string>
-    <string name="download_addon_not_allowed">%1$s 不允许下载，因此你的歌曲将从其他来源保存。</string>
-    <string name="download_addon_needs_lossless_output">%1$s 仅在连接有线、USB 或 LDAC 级耳机时提供音乐。在连接此类耳机前，下载会跳过它，因此你的歌曲将从其他来源保存。</string>
     <string name="show_listen_together_button">显示“一起听”按钮</string>
     <string name="show_listen_together_button_subtitle">关闭后，播放器在歌词和播放队列之间只显示音频输出按钮</string>
     <string name="font">字体</string>

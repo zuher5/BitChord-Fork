@@ -15,8 +15,6 @@ import com.music.bitchord.data.DebugLog as Log
 import androidx.core.content.ContextCompat
 import com.music.bitchord.data.model.Song
 import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.download.DownloadStore
-import com.music.bitchord.download.Downloads
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -64,119 +62,7 @@ object LocalMediaRepository {
     }
 
     /**
-     * Retrieves all songs in the `Music/BitChord` directory, combining app downloads
-     * with any local audio files present in that folder.
-     *
-     * The download record is the better source for a title and a credit — it
-     * holds what the catalogue row said, not what a scanner guessed off a
-     * filename — but it only started carrying the album at all recently, and
-     * an album page's rows never name their own release. So whatever the media
-     * scanner read off each file is collected alongside and used to fill the
-     * gaps, which is what keeps the Albums tab from being empty for everything
-     * downloaded before that field existed.
-     */
-    suspend fun getDownloadedSongs(context: Context): List<Song> = withContext(Dispatchers.IO) {
-        val appDownloads = Downloads.getDownloadedSongs(context)
-        val knownUris = appDownloads.mapNotNull { it.localUri }.toSet()
-        val extraSongs = mutableListOf<Song>()
-
-        /** uri to what the media scanner read off that file. */
-        val scanned = mutableMapOf<String, ScannedTags>()
-
-        runCatching {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val projection = arrayOf(
-                    MediaStore.Audio.Media._ID,
-                    MediaStore.Audio.Media.DISPLAY_NAME,
-                    MediaStore.Audio.Media.RELATIVE_PATH,
-                    MediaStore.Audio.Media.ALBUM,
-                    MediaStore.Audio.Media.ALBUM_ID,
-                    MediaStore.Audio.Media.DATE_ADDED,
-                    MediaStore.Audio.Media.DATE_MODIFIED,
-                )
-                val selection = "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ?"
-                val selectionArgs = arrayOf("%${DownloadStore.FOLDER}%")
-
-                context.contentResolver.query(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                )?.use { cursor ->
-                    val idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
-                    val nameCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
-                    val albumCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
-                    val albumIdCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
-                    val dateAddedCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
-                    val dateModifiedCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED)
-                    val albumArtBaseUri = Uri.parse("content://media/external/audio/albumart")
-
-                    while (cursor.moveToNext()) {
-                        val id = cursor.getLong(idCol)
-                        val name = cursor.getString(nameCol) ?: continue
-                        val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString()
-                        val albumId = cursor.getLong(albumIdCol)
-                        val tags = ScannedTags(
-                            albumName = cursor.getString(albumCol).cleanTag(),
-                            artworkUrl = if (albumId > 0) {
-                                ContentUris.withAppendedId(albumArtBaseUri, albumId).toString()
-                            } else {
-                                null
-                            },
-                            dateAddedSeconds = cursor.getLong(dateAddedCol),
-                            dateModifiedSeconds = cursor.getLong(dateModifiedCol),
-                        )
-                        scanned[contentUri] = tags
-                        if (contentUri !in knownUris && isAudioFileName(name)) {
-                            extraSongs.add(buildSongFromUri(context, contentUri, name, tags))
-                        }
-                    }
-                }
-            } else {
-                val folder = File(
-                    android.os.Environment.getExternalStoragePublicDirectory(
-                        android.os.Environment.DIRECTORY_MUSIC,
-                    ),
-                    DownloadStore.FOLDER,
-                )
-                if (folder.exists() && folder.isDirectory) {
-                    folder.listFiles()?.forEach { file ->
-                        if (file.isFile && isAudioFileName(file.name)) {
-                            val uriStr = Uri.fromFile(file).toString()
-                            if (uriStr !in knownUris) {
-                                val modified = file.lastModified().takeIf { it > 0 }?.div(1_000)
-                                extraSongs.add(
-                                    buildSongFromUri(
-                                        context,
-                                        uriStr,
-                                        file.name,
-                                        ScannedTags(null, null, modified, modified),
-                                    ),
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }.onFailure { Log.w(TAG, "Failed scanning Music/BitChord directory: ${it.message}") }
-
-        val filled = appDownloads.map { song ->
-            val uri = song.localUri ?: return@map song
-            val tags = scanned[uri] ?: return@map song
-            song.copy(
-                albumName = song.albumName ?: tags.albumName,
-                localDateAddedSeconds = tags.dateAddedSeconds,
-                localDateModifiedSeconds = tags.dateModifiedSeconds,
-            )
-        }
-
-        (filled + extraSongs).distinctBy { it.localUri ?: it.videoId }
-    }
-
-    /**
-     * The parts of a scanner row worth reading back — everything else about a
-     * download is better known from the record that made it.
+     * The parts of a scanner row worth reading back.
      */
     private class ScannedTags(
         val albumName: String?,
@@ -207,17 +93,6 @@ object LocalMediaRepository {
         }
 
         val songs = mutableListOf<Song>()
-        // This scan runs over every audio file on the device, which includes
-        // whatever this app has downloaded into Music/BitChord alongside
-        // everything else — but by content URI, the only thing MediaStore
-        // offers here, that download is indistinguishable from a file the
-        // user copied on by hand. Reversing [Downloads.saved] hands a
-        // downloaded track its real YouTube id back, which is what lets
-        // PlaybackTracker recognise it as a video worth registering a play
-        // for — a content URI fails its id check on purpose, since most rows
-        // here really are just local files with nothing to sync.
-        val videoIdByUri = Downloads.saved.value.entries.associate { (id, uri) -> uri to id }
-
         val filterNonMusic = AppSettings.filterNonMusicAudio.value
         val selection = if (filterNonMusic) {
             buildString {
@@ -269,7 +144,7 @@ object LocalMediaRepository {
                     if (filterNonMusic && !isEligibleLocalMusic(durationMs, displayName, path)) continue
                     if (treeUri.isNotBlank() && !isInFolder(path, chosen)) continue
 
-                    songs.add(columns.song(cursor, videoIdByUri))
+                    songs.add(columns.song(cursor))
                 }
             }
         }.onFailure { Log.w(TAG, "Failed scanning device local music: ${it.message}") }
@@ -311,7 +186,7 @@ object LocalMediaRepository {
         val dateModified = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED)
         val track = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)
 
-        fun song(cursor: Cursor, videoIdByUri: Map<String, String>): Song {
+        fun song(cursor: Cursor): Song {
             val rowId = cursor.getLong(id)
             val name = cursor.getString(displayName).orEmpty()
             val artId = cursor.getLong(albumId)
@@ -326,7 +201,7 @@ object LocalMediaRepository {
                 null
             }
             return Song(
-                videoId = videoIdByUri[contentUri] ?: contentUri,
+                videoId = contentUri,
                 title = songTitle,
                 artist = cursor.getString(artist).cleanTag() ?: "Unknown Artist",
                 thumbnailUrl = if (artId > 0) ContentUris.withAppendedId(ALBUM_ART_URI, artId).toString() else null,
@@ -372,8 +247,7 @@ object LocalMediaRepository {
             }
         }.isSuccess
         // MediaStore only answers for files this app may see. Without the
-        // permission its silence is not an answer, except for this app's own
-        // downloads, which it always sees.
+        // permission its silence is not an answer.
         val trustMissing = canAsk && hasStoragePermission(context)
         songs.filter { song ->
             val uri = song.localUri ?: return@filter false
@@ -431,8 +305,7 @@ object LocalMediaRepository {
         }
         resolver.query(target, AUDIO_PROJECTION, selection, args, null)?.use { cursor ->
             if (!cursor.moveToFirst()) return@use null
-            val videoIdByUri = Downloads.saved.value.entries.associate { (id, saved) -> saved to id }
-            AudioColumns(cursor).song(cursor, videoIdByUri)
+            AudioColumns(cursor).song(cursor)
         }
     }.getOrNull()
 
@@ -513,10 +386,9 @@ object LocalMediaRepository {
     }
 
     /**
-     * A song built from a file in the downloads folder the app has no record of
-     * — one copied in by hand, or left behind by an install whose record is
-     * gone. The file's own tags are the only thing there is to go on; [scanned]
-     * fills in what the retriever couldn't read, since the media scanner and
+     * A song built from a file the app has no MediaStore row for. The file's
+     * own tags are the only thing there is to go on; [scanned] fills in what
+     * the retriever couldn't read, since the media scanner and
      * `MediaMetadataRetriever` do not agree on every container.
      */
     private fun buildSongFromUri(

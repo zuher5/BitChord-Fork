@@ -87,7 +87,6 @@
     <string name="prefer_lossless">Kayıpsızı tercih et</string>
     <string name="lossless_source_subtitle">Doğrudan kaynaktan FLAC ve ALAC</string>
     <string name="overridden">Geçersiz kılındı</string>
-    <string name="add_module_source">Modül kaynağı ekle</string>
     <string name="remove_source">Bu kaynağı kaldır</string>
     <string name="test">Test et</string>
     <string name="testing">Test ediliyor…</string>
@@ -134,22 +133,7 @@
     <string name="source_unreachable">Şu anda ulaşılamıyor · %1$s</string>
     <string name="checking">Kontrol ediliyor…</string>
     <string name="failed">Başarısız</string>
-    <string name="widget_square_label">Şu an çalıyor 2×2</string>
-    <string name="widget_wide_label">Şu an çalıyor 4×2</string>
-    <string name="widget_square_description">Kare biçimde, çalma kontrollü albüm kapağı.</string>
-    <string name="widget_wide_description">Parça ve çalma kontrolleriyle tam genişlikte albüm kapağı.</string>
-    <string name="widget_play">Çal</string>
-    <string name="widget_pause">Duraklat</string>
     <string name="widget_next">Sonraki</string>
-    <string name="widget_previous">Önceki</string>
-    <string name="widget_artwork">Albüm kapağı</string>
-    <string name="widget_nothing_played">Henüz bir şey çalınmadı</string>
-    <string name="widget_open_bitchord">BitChord\'u Aç</string>
-    <string name="widget_preview_title">Şarkı adı</string>
-    <string name="widget_preview_artist">Sanatçı</string>
-    <string name="widget_pill_label">Şu an çalıyor 4×1</string>
-    <string name="widget_pill_description">Beğen, karışık çalma ve çalma kontrolleriyle parça, tek satırda.</string>
-    <string name="widget_preview_pill">Şarkı adı - Sanatçı</string>
     <string name="download_quality">İndirme kalitesi</string>
     <string name="download_wifi_only">Yalnızca Wi-Fi üzerinden indir</string>
     <string name="convert_to_audio">Sese dönüştür</string>
@@ -483,12 +467,9 @@
     <string name="sleep_timer">Uyku zamanlayıcısı</string>
     <string name="sleep_timer_custom">Özel</string>
     <string name="start_sleep_timer">Zamanlayıcıyı başlat</string>
-    <string name="sources_no_lossless">Etkin hiçbir kaynak kayıpsız ses sağlayamıyor. Yeniden kodlama yapmadan mevcut kayıpsız dosyaları çalmak için özel bir modül ekleyin.</string>
     <string name="sources_order_footer">Bir kaynakta parça yoksa veya ulaşılamıyorsa BitChord bir sonrakini dener. YouTube üzerindeki kaynaklar daha iyi bir sürüm döndürdüklerinde onun kaydının yerini alabilir.</string>
     <string name="sources_order_header">Kaynaklar, bu sırayla denenir</string>
     <string name="sources_quality_capped">Bu bağlantı Yüksek kalitenin altına ayarlandığından, akışlar bu sınıra uyacak şekilde yeniden kodlanır. İndirmeler etkilenmez.</string>
-    <string name="jiosaavn_mismatch_warning">Bir şarkının yanlış sürümünü eşleştirebilir. Riski sana ait olmak üzere etkinleştir.</string>
-    <string name="enable_jiosaavn">JioSaavn etkinleştirilsin mi?</string>
     <string name="enable_anyway">Yine de etkinleştir</string>
     <string name="sources_subtitle">Sesin nereden geldiği ve kullanılan sıra</string>
     <string name="source_matching">Kaynak eşleştirme</string>
@@ -821,11 +802,8 @@
     <string name="miscellaneous_footer">Etkinleştirildiğinde, uygulamayı son kullanılanlar ekranından kapatmak müzik çalmayı da durdurur.</string>
 
 
-    <string name="add_addon">Eklenti ekle</string>
 
-    <string name="add_addon_detail">BitChord\'u barındırdığınız veya bağlantısını aldığınız bir eklenti sunucusuna yönlendirin</string>
 
-    <string name="addon_url_description">Eklentinin URL\'sini yapıştırın — kök dizin veya manifest.json. BitChord arama ve oynatma yeteneklerini okur.</string>
 
     <string name="advanced_options">Gelişmiş seçenekler</string>
 
@@ -1217,16 +1195,12 @@
     <string name="source_downloads_on">İndirmeye izin veriliyor</string>
     <string name="source_downloads_off">Yalnızca akış</string>
     <string name="lossless_output_permission">Bluetooth kodeğini kontrol et</string>
-    <string name="lossless_output_permission_detail">LDAC veya LHDC kulaklıkların kayıpsız eklentileri açabilmesi için Yakındaki cihazlar iznini verin</string>
     <string name="cached_songs">Önbellekteki şarkılar</string>
-    <string name="cached_songs_subtitle">Şarkı önbelleğindeki YouTube ve JioSaavn şarkıları</string>
-    <string name="cached_songs_empty">Henüz önbellekte şarkı yok. YouTube veya JioSaavn üzerinden çaldığın şarkılar burada görünecek.</string>
     <string name="cached_song_partial">Kısmi</string>
     <string name="remove_from_cache">Önbellekten kaldır</string>
     <string name="cached_song_remove">Kaldır</string>
     <string name="removed_from_cache">Şarkı önbelleğinden kaldırıldı</string>
     <string name="show_cache_folder">Önbellekteki şarkılar klasörünü göster</string>
-    <string name="show_cache_folder_subtitle">Kitaplığa, önbellekte tutulan YouTube ve JioSaavn şarkılarını içeren bir klasör ekler</string>
     <string name="song_cache_unlimited">Sınırsız</string>
     <string name="song_cache_unlimited_subtitle">Sınır yok. Önbellekteki ses, depolama alanı dolana kadar büyüyebilir.</string>
     <string name="clear_song_cache_title">Şarkı önbelleği temizlensin mi?</string>
@@ -1277,8 +1251,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">Yapılandırılmadı — API URL\'sini ayarlamak için dokunun</string>
     <string name="artist_signatures_test_failed">Bu URL\'de API\'ye ulaşılamadı</string>
-    <string name="search_source_addons">Eklentiler</string>
-    <string name="search_addons_none">Etkin eklenti yok. Ayarlar → Kaynaklar bölümünden bir tane ekleyin.</string>
     <string name="app_icon">Uygulama simgesi</string>
     <string name="app_icon_default">Varsayılan</string>
     <string name="show_queue_history">Sıra geçmişini göster</string>
@@ -1352,12 +1324,6 @@
     <string name="progressive_blur">Kademeli bulanıklık</string>
     <string name="remove_from_history">Geçmişten kaldır</string>
     <string name="remove_from_history_failed">Geçmişten kaldırılamadı</string>
-    <string name="addon_blocked_title">Bu şarkı çalınamıyor</string>
-    <string name="addon_blocked_quality">%1$s üzerindeki ses kalitesi %2$s olarak ayarlı. %3$s şarkıları yalnızca Kayıpsız çalar; bunu çalmak için Ayarlar → Ses kalitesi bölümünden değiştirin.</string>
-    <string name="addon_blocked_watch">Müzik saatiniz üzerinden çalıyor ve saat sesi Kayıpsız kalitenin altında sınırlıyor. Telefonunuz müziği geri aldığında %1$s şarkıları yeniden çalar.</string>
-    <string name="download_addon_left_out_title">%1$s olmadan indiriliyor</string>
-    <string name="download_addon_not_allowed">%1$s indirmeye izin vermiyor, bu yüzden şarkılarınız diğer kaynaklarınızdan kaydediliyor.</string>
-    <string name="download_addon_needs_lossless_output">%1$s yalnızca kablolu, USB veya LDAC sınıfı kulaklık bağlıyken müzik sunar. Biri bağlanana kadar indirmeler onu atlar, bu yüzden şarkılarınız diğer kaynaklarınızdan kaydediliyor.</string>
     <string name="show_listen_together_button">Birlikte dinle düğmesini göster</string>
     <string name="show_listen_together_button_subtitle">Kapalıyken oynatıcı, şarkı sözleri ile sıra arasında yalnızca ses çıkışı düğmesini gösterir</string>
     <string name="font">Yazı tipi</string>

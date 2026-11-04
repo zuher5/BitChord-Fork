@@ -105,7 +105,6 @@
     <string name="prefer_lossless">Preferisci lossless</string>
     <string name="lossless_source_subtitle">FLAC e ALAC direttamente dalla sorgente</string>
     <string name="overridden">Sovrascritto</string>
-    <string name="add_module_source">Aggiungi una sorgente modulo</string>
     <string name="remove_source">Rimuovi questa sorgente</string>
     <string name="test">Testa</string>
     <string name="testing">Test in corso…</string>
@@ -152,22 +151,7 @@
     <string name="source_unreachable">Non raggiungibile al momento · %1$s</string>
     <string name="checking">Verifica in corso…</string>
     <string name="failed">Non riuscito</string>
-    <string name="widget_square_label">In riproduzione 2×2</string>
-    <string name="widget_wide_label">In riproduzione 4×2</string>
-    <string name="widget_square_description">Copertina con controlli di riproduzione, in formato quadrato.</string>
-    <string name="widget_wide_description">Copertina con brano e controlli di riproduzione, a larghezza intera.</string>
-    <string name="widget_play">Riproduci</string>
-    <string name="widget_pause">Pausa</string>
     <string name="widget_next">Successivo</string>
-    <string name="widget_previous">Precedente</string>
-    <string name="widget_artwork">Copertina album</string>
-    <string name="widget_nothing_played">Nulla ancora riprodotto</string>
-    <string name="widget_open_bitchord">Apri BitChord</string>
-    <string name="widget_preview_title">Titolo brano</string>
-    <string name="widget_preview_artist">Artista</string>
-    <string name="widget_pill_label">In riproduzione 4×1</string>
-    <string name="widget_pill_description">Il brano con Mi piace, Casuale e controlli di riproduzione, su una sola riga.</string>
-    <string name="widget_preview_pill">Titolo brano - Artista</string>
     <string name="download_quality">Qualità download</string>
     <string name="download_wifi_only">Scarica solo via Wi-Fi</string>
     <string name="convert_to_audio">Converti in audio</string>
@@ -501,12 +485,9 @@
     <string name="sleep_timer">Timer di spegnimento</string>
     <string name="sleep_timer_custom">Personalizzato</string>
     <string name="start_sleep_timer">Avvia timer</string>
-    <string name="sources_no_lossless">Nessuna sorgente attiva può fornire audio lossless. Aggiungi un modulo personalizzato per riprodurre i file lossless disponibili senza transcodifica.</string>
     <string name="sources_order_footer">Se una sorgente non ha un brano o non è raggiungibile, BitChord prova la successiva. Le sorgenti sopra YouTube possono sostituire la sua registrazione quando restituiscono una versione migliore.</string>
     <string name="sources_order_header">Sorgenti, provate in quest\'ordine</string>
     <string name="sources_quality_capped">Questa connessione è impostata sotto Alta qualità, quindi gli stream vengono transcodificati per rispettare questo limite. I download non ne risentono.</string>
-    <string name="jiosaavn_mismatch_warning">Potrebbe trovare la versione sbagliata di un brano. Attivalo a tuo rischio.</string>
-    <string name="enable_jiosaavn">Attivare JioSaavn?</string>
     <string name="enable_anyway">Attiva comunque</string>
     <string name="sources_subtitle">Da dove proviene l\'audio e l\'ordine usato</string>
     <string name="source_matching">Corrispondenza delle sorgenti</string>
@@ -839,11 +820,8 @@
     <string name="miscellaneous_footer">Quando attivo, chiudere l\'app dalla schermata delle app recenti interrompe anche la riproduzione musicale.</string>
 
 
-    <string name="add_addon">Aggiungi un componente aggiuntivo</string>
 
-    <string name="add_addon_detail">Collega BitChord a un server di componenti aggiuntivi che gestisci o di cui hai un link</string>
 
-    <string name="addon_url_description">Incolla l\'URL del componente aggiuntivo — radice o manifest.json. BitChord leggerà i contenuti disponibili.</string>
 
     <string name="advanced_options">Opzioni avanzate</string>
 
@@ -1199,16 +1177,12 @@
     <string name="source_downloads_on">Download consentiti</string>
     <string name="source_downloads_off">Solo streaming</string>
     <string name="lossless_output_permission">Controlla codec Bluetooth</string>
-    <string name="lossless_output_permission_detail">Consenti Dispositivi nelle vicinanze perché le cuffie LDAC o LHDC sblocchino i componenti lossless</string>
     <string name="cached_songs">Brani in cache</string>
-    <string name="cached_songs_subtitle">Brani di YouTube e JioSaavn nella cache dei brani</string>
-    <string name="cached_songs_empty">Ancora nessun brano in cache. I brani che riproduci da YouTube o JioSaavn appariranno qui.</string>
     <string name="cached_song_partial">Parziale</string>
     <string name="remove_from_cache">Rimuovi dalla cache</string>
     <string name="cached_song_remove">Rimuovi</string>
     <string name="removed_from_cache">Rimosso dalla cache dei brani</string>
     <string name="show_cache_folder">Mostra cartella dei brani in cache</string>
-    <string name="show_cache_folder_subtitle">Aggiunge alla Libreria una cartella con i brani di YouTube e JioSaavn conservati nella cache</string>
     <string name="song_cache_unlimited">Illimitata</string>
     <string name="song_cache_unlimited_subtitle">Nessun limite. L’audio in cache può crescere fino a riempire la memoria.</string>
     <string name="clear_song_cache_title">Svuotare la cache dei brani?</string>
@@ -1250,8 +1224,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">Non configurato — tocca per impostare l\'URL dell\'API</string>
     <string name="artist_signatures_test_failed">Impossibile raggiungere l\'API a questo URL</string>
-    <string name="search_source_addons">Addon</string>
-    <string name="search_addons_none">Nessun addon attivo. Aggiungine uno in Impostazioni → Fonti.</string>
     <string name="app_icon">Icona dell’app</string>
     <string name="app_icon_default">Predefinita</string>
     <string name="show_queue_history">Mostra cronologia della coda</string>
@@ -1334,12 +1306,6 @@
     <string name="progressive_blur">Sfocatura progressiva</string>
     <string name="remove_from_history">Rimuovi dalla cronologia</string>
     <string name="remove_from_history_failed">Impossibile rimuovere dalla cronologia</string>
-    <string name="addon_blocked_title">Impossibile riprodurre questo brano</string>
-    <string name="addon_blocked_quality">La qualità audio su %1$s è impostata su %2$s. I brani di %3$s si riproducono solo in Lossless: cambiala in Impostazioni → Qualità audio per riprodurre questo.</string>
-    <string name="addon_blocked_watch">La musica viene riprodotta dall\'orologio, che limita l\'audio sotto Lossless. I brani di %1$s torneranno a suonare quando il telefono riprenderà la musica.</string>
-    <string name="download_addon_left_out_title">Download senza %1$s</string>
-    <string name="download_addon_not_allowed">%1$s non consente i download, quindi i tuoi brani vengono salvati dalle altre fonti.</string>
-    <string name="download_addon_needs_lossless_output">%1$s fornisce musica solo con cuffie cablate, USB o di classe LDAC collegate. I download lo saltano finché non ne colleghi una, quindi i tuoi brani vengono salvati dalle altre fonti.</string>
     <string name="show_listen_together_button">Mostra il pulsante Ascoltare insieme</string>
     <string name="show_listen_together_button_subtitle">Se disattivato, il lettore mostra solo il pulsante dell\'uscita audio tra il testo e la coda</string>
     <string name="font">Carattere</string>

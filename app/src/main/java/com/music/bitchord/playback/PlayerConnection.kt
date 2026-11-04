@@ -29,11 +29,9 @@ import com.music.bitchord.data.model.PlaybackSourceType
 import com.music.bitchord.data.model.QueueTier
 import com.music.bitchord.data.model.Song
 import com.music.bitchord.data.model.artworkAt
-import com.music.bitchord.data.sources.SourceKind
 import com.music.bitchord.data.sources.SourceRegistry
 import com.music.bitchord.data.sources.SourceResolver
 import com.music.bitchord.data.sources.TrackMatcher
-import com.music.bitchord.download.Downloads
 import com.music.bitchord.ui.rememberIsForeground
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -285,11 +283,10 @@ suspend fun MediaController.commitRadioQueue() {
 
 
 /**
- * Marks the span of a queue-row drag — see [PartySync.beginQueueDrag]. Each
- * neighbour the row crosses is still its own `moveMediaItem`, sent the moment
- * it happens so the local queue and the on-screen list stay in step; this only
- * tells a jam's party sync to hold its publish until the row is dropped,
- * instead of sending one for every neighbour crossed along the way.
+ * Marks the span of a queue-row drag. Each neighbour the row crosses is still
+ * its own `moveMediaItem`, sent the moment it happens so the local queue and
+ * the on-screen list stay in step; the bracket exists so the service can treat
+ * a whole drag as one edit rather than a burst of them.
  */
 fun MediaController.setQueueDragActive(active: Boolean) {
     sendCustomCommand(
@@ -561,9 +558,8 @@ private const val EXTRA_DURATION = "bitchord.durationText"
 private const val EXTRA_EXPLICIT = "bitchord.explicit"
 
 /**
- * @see Song.sourceQuality — carried so an addon row rebuilt from the queue
- * (a restore, a reorder) keeps the `&mix=` its first item had; see
- * [SourceResolver.MIX_PARAM].
+ * @see Song.sourceQuality — carried so a row rebuilt from the queue (a
+ * restore, a reorder) keeps the tier its first item advertised.
  */
 private const val EXTRA_SOURCE_QUALITY = "bitchord.sourceQuality"
 private const val EXTRA_SOURCE_HI_RES = "bitchord.sourceHiRes"
@@ -634,20 +630,9 @@ private fun Song.matchQuery(): String = buildString {
     if (isVideo) append("&m=1")
 }
 
-/**
- * `&mix=` on every addon row, naming the mix its search answer said it is, so
- * its play asks for that row and nothing else — see [SourceResolver.MIX_PARAM].
- * Empty for every other source.
- */
-private fun Song.pickedMixQuery(configId: String): String {
-    if (SourceRegistry.config(configId)?.kind != SourceKind.ADDON) return ""
-    return "&${SourceResolver.MIX_PARAM}=${SourceResolver.mixOf(sourceQuality)}"
-}
-
 fun Song.toMediaItem(): MediaItem {
     val sourceTrack = SourceRegistry.parseTrackKey(videoId)
-    // A row from search or a playlist carries no file of its own, but the track
-    // may still be on disk from a download — see [Downloads.saved].
+    // A row from search or a playlist carries no file of its own.
     //
     // Answered *here*, where the item is built, rather than in the player's
     // stream resolver, because everything downstream decides what to do by the
@@ -655,23 +640,14 @@ fun Song.toMediaItem(): MediaItem {
     // content URIs past the disk cache instead of writing a second copy of
     // them, and DefaultDataSource picks ContentDataSource off the same scheme.
     // A local URI substituted further down lands inside the half of the chain
-    // that only speaks HTTP, where OkHttp rejects it as a malformed URL — which
-    // is what a downloaded track played from search used to do, four times over,
-    // before giving up.
+    // that only speaks HTTP, where OkHttp rejects it as a malformed URL.
     //
-    // Both halves are checked, not just the record: a claim about a folder this
-    // app does not own — see [Downloads] — outlives the file it names whenever
-    // one is deleted from a file manager, and trusting either unchecked sent the
-    // player a `file://` uri to a path that had simply stopped existing.
-    //
-    // [localUri] needs it just as much as the lookup does, and for a reason that
-    // is easy to miss: it is not only set from a folder read that just verified
-    // the file. It also round-trips off the player's own item through
-    // [MediaItem.toSong], so an item waiting in the live queue can carry a URI
-    // that has become stale since it was created. Checking only the lookup
-    // leaves that path unguarded.
-    val offlineUri = localUri?.takeUnless(Downloads::isMissingLocalFile)
-        ?: Downloads.verifiedSavedUri(videoId)
+    // [localUri] needs the same care for a reason that is easy to miss: it is
+    // not only set from a folder read that just verified the file. It also
+    // round-trips off the player's own item through [MediaItem.toSong], so an
+    // item waiting in the live queue can carry a URI that has become stale
+    // since it was created.
+    val offlineUri = localUri
     val uriString = offlineUri ?: when {
         videoId.startsWith("content://") || videoId.startsWith("file://") -> videoId
         // Title, artist and runtime ride along in the URI because they are what
@@ -681,7 +657,7 @@ fun Song.toMediaItem(): MediaItem {
         // current item, so reaching back for the session's metadata isn't an
         // option either.
         sourceTrack != null -> SourceRegistry.trackUri(sourceTrack.first, sourceTrack.second)
-            .let { "$it${matchQuery()}${pickedMixQuery(sourceTrack.first)}" }
+            .let { "$it${matchQuery()}" }
         // A track the listener reverted by hand stays reverted — see
         // [OriginalVersion]. Applied here rather than at the one menu that
         // reverts, because "stays" has to mean the next queue entry built for
@@ -782,7 +758,7 @@ fun Song.toMediaItem(): MediaItem {
 /**
  * The current song reopened through YouTube alone, bypassing every substitute
  * and quality-upgrade path.  The separate rendition tag is essential: the
- * base cache key may currently contain JioSaavn or module bytes, and resuming
+ * base cache key may currently contain bytes from another source, and resuming
  * that entry as though it were a YouTube WebM corrupts the stream.
  */
 fun Song.toDirectYouTubeMediaItem(): MediaItem =
@@ -801,7 +777,7 @@ private fun Song.directYouTubeUri(): String =
  * upgrade has visibly swapped, because the swap is not the only way to end up
  * on a copy that is wrong. A source ranked above YouTube gets first refusal on
  * every track — see [SourceResolver.substituteForYouTube] — so a song can be
- * playing JioSaavn's or a module's idea of it from its very first second, with
+ * playing another catalogue's idea of it from its very first second, with
  * nothing on screen having changed and nothing to undo. Those are precisely the
  * ones worth doubting: the match is made on title, artist and runtime, and a
  * live version, a remaster or a different mix agreeing on all three is a
@@ -812,7 +788,7 @@ private fun Song.directYouTubeUri(): String =
  * The three exclusions are all "there is no such upload", not "reverting would
  * be unwise":
  *
- *  - a track queued from a module's own catalogue has no YouTube id at all,
+ *  - a track queued from a source's own catalogue has no YouTube id at all,
  *    only a source-and-track key that would build a nonsense URI;
  *  - a file on the device is identified by its own `content://` or `file://`
  *    URI, for the same reason;
@@ -857,13 +833,11 @@ fun mediaIdIn(uri: Uri): String? = if (uri.authority == "source") {
  * Replaces the queue with [songs] and starts it.
  *
  * Suspending because of the mapping: [toMediaItem] is not the cheap struct copy
- * it looks like — it builds a URI and a metadata bundle per track, and asks
- * [Downloads] whether the file it has on record for the track is still on disk,
- * which is a `stat` per downloaded song. One track's worth of that is nothing.
- * A playlist's worth is hundreds of milliseconds of it, and run inline it lands
- * on the frame that handles the tap, so the page freezes before the music
- * starts. Built off the main thread and handed to the player back on it, which
- * is where Media3 requires the call to be made.
+ * it looks like — it builds a URI and a metadata bundle per track, which is
+ * cheap for one track and hundreds of milliseconds for a playlist, and run
+ * inline it lands on the frame that handles the tap, so the page freezes before
+ * the music starts. Built off the main thread and handed to the player back on
+ * it, which is where Media3 requires the call to be made.
  */
 suspend fun MediaController.playSongs(songs: List<Song>, startIndex: Int) {
     if (songs.isEmpty()) return

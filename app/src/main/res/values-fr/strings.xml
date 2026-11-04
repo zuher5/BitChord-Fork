@@ -84,7 +84,6 @@
     <string name="prefer_lossless">Préférer le sans perte</string>
     <string name="lossless_source_subtitle">FLAC et ALAC directement depuis la source</string>
     <string name="overridden">Remplacé</string>
-    <string name="add_module_source">Ajouter une source de module</string>
     <string name="remove_source">Supprimer cette source</string>
     <string name="test">Tester</string>
     <string name="testing">Test en cours…</string>
@@ -126,22 +125,7 @@
     <string name="source_unreachable">Inaccessible pour le moment · %1$s</string>
     <string name="checking">Vérification…</string>
     <string name="failed">Échec</string>
-    <string name="widget_square_label">Lecture en cours 2×2</string>
-    <string name="widget_wide_label">Lecture en cours 4×2</string>
-    <string name="widget_square_description">Pochette d\'album avec les commandes de lecture, en carré.</string>
-    <string name="widget_wide_description">Pochette d\'album avec le titre et les commandes de lecture, pleine largeur.</string>
-    <string name="widget_play">Lecture</string>
-    <string name="widget_pause">Pause</string>
     <string name="widget_next">Suivant</string>
-    <string name="widget_previous">Précédent</string>
-    <string name="widget_artwork">Pochette d\'album</string>
-    <string name="widget_nothing_played">Rien n\'a encore été joué</string>
-    <string name="widget_open_bitchord">Ouvrir BitChord</string>
-    <string name="widget_preview_title">Titre de la chanson</string>
-    <string name="widget_preview_artist">Artiste</string>
-    <string name="widget_pill_label">Lecture en cours 4×1</string>
-    <string name="widget_pill_description">Le titre avec J\'aime, lecture aléatoire et commandes de lecture, sur une seule ligne.</string>
-    <string name="widget_preview_pill">Titre de la chanson - Artiste</string>
     <string name="download_quality">Qualité de téléchargement</string>
     <string name="download_wifi_only">Télécharger uniquement en Wi-Fi</string>
     <string name="spatial_audio">Audio spatial</string>
@@ -455,12 +439,9 @@
     <string name="sleep_timer">Minuteur de veille</string>
     <string name="sleep_timer_custom">Personnalisé</string>
     <string name="start_sleep_timer">Démarrer le minuteur</string>
-    <string name="sources_no_lossless">Aucune source activée ne peut fournir de l\'audio sans perte. Ajoutez un module personnalisé pour lire les fichiers sans perte disponibles sans transcodage.</string>
     <string name="sources_order_footer">Si une source n\'a pas un titre ou est inaccessible, BitChord essaie la suivante. Les sources situées au-dessus de YouTube peuvent remplacer son enregistrement lorsqu\'elles renvoient une meilleure version.</string>
     <string name="sources_order_header">Sources, testées dans cet ordre</string>
     <string name="sources_quality_capped">Cette connexion est réglée en dessous de la qualité Élevée, les flux sont donc transcodés pour respecter cette limite. Les téléchargements ne sont pas concernés.</string>
-    <string name="jiosaavn_mismatch_warning">Peut trouver la mauvaise version d\'un titre. Activez-le à vos risques et périls.</string>
-    <string name="enable_jiosaavn">Activer JioSaavn ?</string>
     <string name="enable_anyway">Activer quand même</string>
     <string name="sources_subtitle">D\'où vient l\'audio et l\'ordre utilisé</string>
     <string name="source_matching">Correspondance des sources</string>
@@ -786,11 +767,8 @@
 
     <string name="add_account">Ajouter un compte</string>
 
-    <string name="add_addon">Ajouter une extension</string>
 
-    <string name="add_addon_detail">Pointez BitChord vers un serveur d\'extension hébergé ou partagé</string>
 
-    <string name="addon_url_description">Collez l\'URL de l\'extension — racine ou manifest.json. BitChord lira ce qu\'il peut rechercher et diffuser.</string>
 
     <string name="advanced_options">Options avancées</string>
 
@@ -1261,16 +1239,12 @@
     <string name="source_downloads_on">Téléchargements autorisés</string>
     <string name="source_downloads_off">Streaming uniquement</string>
     <string name="lossless_output_permission">Vérifier le codec Bluetooth</string>
-    <string name="lossless_output_permission_detail">Autorisez Appareils à proximité pour qu\'un casque LDAC ou LHDC débloque les modules sans perte</string>
     <string name="cached_songs">Titres en cache</string>
-    <string name="cached_songs_subtitle">Titres de YouTube et JioSaavn dans le cache audio</string>
-    <string name="cached_songs_empty">Aucun titre en cache pour l’instant. Les titres lus depuis YouTube ou JioSaavn apparaîtront ici.</string>
     <string name="cached_song_partial">Partiel</string>
     <string name="remove_from_cache">Retirer du cache</string>
     <string name="cached_song_remove">Retirer</string>
     <string name="removed_from_cache">Retiré du cache des titres</string>
     <string name="show_cache_folder">Afficher le dossier des titres en cache</string>
-    <string name="show_cache_folder_subtitle">Ajoute à la Bibliothèque un dossier avec les titres YouTube et JioSaavn conservés dans le cache</string>
     <string name="song_cache_unlimited">Illimité</string>
     <string name="song_cache_unlimited_subtitle">Aucune limite. L\'audio en cache peut grandir jusqu\'à remplir votre stockage.</string>
     <string name="clear_song_cache_title">Vider le cache audio ?</string>
@@ -1312,8 +1286,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">Non configuré — touchez pour définir l\'URL de l\'API</string>
     <string name="artist_signatures_test_failed">Impossible de joindre l\'API à cette URL</string>
-    <string name="search_source_addons">Addons</string>
-    <string name="search_addons_none">Aucun addon n\'est activé. Ajoutez-en un dans Réglages → Sources.</string>
     <string name="app_icon">Icône de l\'app</string>
     <string name="app_icon_default">Par défaut</string>
     <string name="show_queue_history">Afficher l\'historique de la file</string>
@@ -1396,12 +1368,6 @@
     <string name="progressive_blur">Flou progressif</string>
     <string name="remove_from_history">Retirer de l\'historique</string>
     <string name="remove_from_history_failed">Impossible de retirer de l\'historique</string>
-    <string name="addon_blocked_title">Impossible de lire ce titre</string>
-    <string name="addon_blocked_quality">La qualité audio en %1$s est réglée sur %2$s. Les titres de %3$s ne sont lus qu\'en Sans perte : modifiez-la dans Paramètres → Qualité audio pour lire celui-ci.</string>
-    <string name="addon_blocked_watch">La musique passe par votre montre, qui limite l\'audio en dessous de Sans perte. Les titres de %1$s seront de nouveau lus quand votre téléphone reprendra la musique.</string>
-    <string name="download_addon_left_out_title">Téléchargement sans %1$s</string>
-    <string name="download_addon_not_allowed">%1$s n\'autorise pas les téléchargements : vos titres sont donc enregistrés depuis vos autres sources.</string>
-    <string name="download_addon_needs_lossless_output">%1$s ne diffuse de la musique que lorsqu\'un casque filaire, USB ou de classe LDAC est connecté. Les téléchargements l\'ignorent tant qu\'aucun ne l\'est : vos titres sont donc enregistrés depuis vos autres sources.</string>
     <string name="show_listen_together_button">Afficher le bouton Écouter ensemble</string>
     <string name="show_listen_together_button_subtitle">Si désactivé, le lecteur n\'affiche que le bouton de sortie audio entre les paroles et la file d\'attente</string>
     <string name="font">Police</string>

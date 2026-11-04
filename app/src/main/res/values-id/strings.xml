@@ -78,7 +78,6 @@
     <string name="prefer_lossless">Utamakan lossless</string>
     <string name="lossless_source_subtitle">FLAC dan ALAC langsung dari sumber</string>
     <string name="overridden">Ditimpa</string>
-    <string name="add_module_source">Tambahkan sumber modul</string>
     <string name="remove_source">Hapus sumber ini</string>
     <string name="test">Uji</string>
     <string name="testing">Menguji…</string>
@@ -120,22 +119,7 @@
     <string name="source_unreachable">Tidak dapat dijangkau sekarang · %1$s</string>
     <string name="checking">Memeriksa…</string>
     <string name="failed">Gagal</string>
-    <string name="widget_square_label">Sedang diputar 2×2</string>
-    <string name="widget_wide_label">Sedang diputar 4×2</string>
-    <string name="widget_square_description">Sampul album dengan kontrol pemutaran, berbentuk persegi.</string>
-    <string name="widget_wide_description">Sampul album dengan judul lagu dan kontrol pemutaran, selebar layar.</string>
-    <string name="widget_play">Putar</string>
-    <string name="widget_pause">Jeda</string>
     <string name="widget_next">Berikutnya</string>
-    <string name="widget_previous">Sebelumnya</string>
-    <string name="widget_artwork">Sampul album</string>
-    <string name="widget_nothing_played">Belum ada yang diputar</string>
-    <string name="widget_open_bitchord">Buka BitChord</string>
-    <string name="widget_preview_title">Judul lagu</string>
-    <string name="widget_preview_artist">Artis</string>
-    <string name="widget_pill_label">Sedang diputar 4×1</string>
-    <string name="widget_pill_description">Lagu dengan Suka, Acak, dan kontrol pemutaran dalam satu baris.</string>
-    <string name="widget_preview_pill">Judul lagu - Artis</string>
     <string name="download_quality">Kualitas unduhan</string>
     <string name="download_wifi_only">Unduh hanya lewat Wi-Fi</string>
     <string name="spatial_audio">Audio spasial</string>
@@ -440,12 +424,9 @@
     <string name="sleep_timer">Timer tidur</string>
     <string name="sleep_timer_custom">Kustom</string>
     <string name="start_sleep_timer">Mulai timer</string>
-    <string name="sources_no_lossless">Tidak ada sumber aktif yang dapat menyediakan audio lossless. Tambahkan modul kustom untuk memutar file lossless yang tersedia tanpa transcoding.</string>
     <string name="sources_order_footer">Jika suatu sumber tidak memiliki trek atau tidak dapat dijangkau, BitChord mencoba sumber berikutnya. Sumber di atas YouTube dapat menggantikan rekamannya saat menghasilkan versi yang lebih baik.</string>
     <string name="sources_order_header">Sumber, dicoba dalam urutan ini</string>
     <string name="sources_quality_capped">Koneksi ini diatur di bawah Kualitas tinggi, sehingga stream ditranskode agar sesuai dengan batas tersebut. Unduhan tidak terpengaruh.</string>
-    <string name="jiosaavn_mismatch_warning">Bisa mencocokkan versi lagu yang salah. Aktifkan dengan risiko sendiri.</string>
-    <string name="enable_jiosaavn">Aktifkan JioSaavn?</string>
     <string name="enable_anyway">Tetap aktifkan</string>
     <string name="sources_subtitle">Dari mana audio berasal dan urutan yang digunakan</string>
     <string name="source_matching">Pencocokan sumber</string>
@@ -764,11 +745,8 @@
 
     <string name="add_account">Tambah akun</string>
 
-    <string name="add_addon">Tambah addon</string>
 
-    <string name="add_addon_detail">Arahkan BitChord ke server addon yang Anda miliki atau bagikan tautan</string>
 
-    <string name="addon_url_description">Tempel URL addon — direktori utama atau manifest.json.</string>
 
     <string name="advanced_options">Opsi lanjutan</string>
 
@@ -1237,16 +1215,12 @@
     <string name="source_downloads_on">Unduhan diizinkan</string>
     <string name="source_downloads_off">Hanya streaming</string>
     <string name="lossless_output_permission">Periksa codec Bluetooth</string>
-    <string name="lossless_output_permission_detail">Izinkan Perangkat di sekitar agar headphone LDAC atau LHDC bisa membuka addon lossless</string>
     <string name="cached_songs">Lagu dalam cache</string>
-    <string name="cached_songs_subtitle">Lagu dari YouTube dan JioSaavn di cache lagu</string>
-    <string name="cached_songs_empty">Belum ada lagu dalam cache. Lagu yang kamu putar dari YouTube atau JioSaavn akan muncul di sini.</string>
     <string name="cached_song_partial">Sebagian</string>
     <string name="remove_from_cache">Hapus dari cache</string>
     <string name="cached_song_remove">Hapus</string>
     <string name="removed_from_cache">Dihapus dari cache lagu</string>
     <string name="show_cache_folder">Tampilkan folder lagu dalam cache</string>
-    <string name="show_cache_folder_subtitle">Menambahkan folder di Pustaka berisi lagu YouTube dan JioSaavn yang disimpan di cache lagu</string>
     <string name="song_cache_unlimited">Tanpa batas</string>
     <string name="song_cache_unlimited_subtitle">Tanpa batas. Audio dalam cache bisa terus bertambah hingga penyimpanan penuh.</string>
     <string name="clear_song_cache_title">Hapus cache lagu?</string>
@@ -1288,8 +1262,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">Belum dikonfigurasi — ketuk untuk mengatur URL API</string>
     <string name="artist_signatures_test_failed">Tidak dapat menjangkau API di URL tersebut</string>
-    <string name="search_source_addons">Addon</string>
-    <string name="search_addons_none">Tidak ada addon yang aktif. Tambahkan satu di Pengaturan → Sumber.</string>
     <string name="app_icon">Ikon aplikasi</string>
     <string name="app_icon_default">Default</string>
     <string name="show_queue_history">Tampilkan riwayat antrean</string>
@@ -1372,12 +1344,6 @@
     <string name="progressive_blur">Blur progresif</string>
     <string name="remove_from_history">Hapus dari riwayat</string>
     <string name="remove_from_history_failed">Tidak dapat menghapus dari riwayat</string>
-    <string name="addon_blocked_title">Tidak dapat memutar lagu ini</string>
-    <string name="addon_blocked_quality">Kualitas audio di %1$s diatur ke %2$s. Lagu dari %3$s hanya diputar dalam Lossless — ubah di Pengaturan → Kualitas audio untuk memutar lagu ini.</string>
-    <string name="addon_blocked_watch">Musik diputar melalui jam tangan Anda, yang membatasi audio di bawah Lossless. Lagu dari %1$s akan diputar lagi setelah ponsel Anda mengambil alih musik.</string>
-    <string name="download_addon_left_out_title">Mengunduh tanpa %1$s</string>
-    <string name="download_addon_not_allowed">%1$s tidak mengizinkan unduhan, jadi lagu Anda disimpan dari sumber Anda yang lain.</string>
-    <string name="download_addon_needs_lossless_output">%1$s hanya menyajikan musik saat headphone kabel, USB, atau kelas LDAC terhubung. Unduhan melewatinya sampai ada yang terhubung, jadi lagu Anda disimpan dari sumber Anda yang lain.</string>
     <string name="show_listen_together_button">Tampilkan tombol Dengar bersama</string>
     <string name="show_listen_together_button_subtitle">Jika nonaktif, pemutar hanya menampilkan tombol output audio di antara lirik dan antrean</string>
     <string name="font">Font</string>

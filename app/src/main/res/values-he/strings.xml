@@ -85,7 +85,6 @@
     <string name="prefer_lossless">העדפת Lossless</string>
     <string name="lossless_source_subtitle">FLAC ו-ALAC ישירות מהמקור</string>
     <string name="overridden">נדרס</string>
-    <string name="add_module_source">הוספת מקור מודול</string>
     <string name="remove_source">הסרת מקור זה</string>
     <string name="test">בדיקה</string>
     <string name="testing">בודק…</string>
@@ -127,22 +126,7 @@
     <string name="source_unreachable">לא ניתן להתחבר כרגע · %1$s</string>
     <string name="checking">בודק…</string>
     <string name="failed">נכשל</string>
-    <string name="widget_square_label">מתנגן כעת 2×2</string>
-    <string name="widget_wide_label">מתנגן כעת 4×2</string>
-    <string name="widget_square_description">עטיפת אלבום עם פקדי הפעלה, בריבוע.</string>
-    <string name="widget_wide_description">עטיפת אלבום עם פרטי הרצועה ופקדי הפעלה, ברוחב מלא.</string>
-    <string name="widget_play">הפעלה</string>
-    <string name="widget_pause">השהיה</string>
     <string name="widget_next">הבא</string>
-    <string name="widget_previous">הקודם</string>
-    <string name="widget_artwork">עטיפת אלבום</string>
-    <string name="widget_nothing_played">עדיין לא הושמע דבר</string>
-    <string name="widget_open_bitchord">פתיחת BitChord</string>
-    <string name="widget_preview_title">שם השיר</string>
-    <string name="widget_preview_artist">אמן</string>
-    <string name="widget_pill_label">מתנגן כעת 4×1</string>
-    <string name="widget_pill_description">הרצועה עם לייק, ערבוב ופקדי הפעלה, בשורה אחת.</string>
-    <string name="widget_preview_pill">שם השיר - אמן</string>
     <string name="download_quality">איכות הורדה</string>
     <string name="download_wifi_only">הורדה ב-Wi-Fi בלבד</string>
     <string name="spatial_audio">אודיו מרחבי</string>
@@ -419,12 +403,9 @@
     <string name="sleep_timer">טיימר שינה</string>
     <string name="sleep_timer_custom">מותאם אישית</string>
     <string name="start_sleep_timer">הפעל טיימר</string>
-    <string name="sources_no_lossless">שום מקור מופעל אינו יכול לספק שמע ללא אובדן נתונים. הוסף מודול מותאם אישית כדי להפעיל קבצים זמינים ללא אובדן נתונים ללא המרה.</string>
     <string name="sources_order_footer">אם למקור אין רצועה, BitChord מנסה את הבא. מקורות מעל YouTube יכולים להחליפו כשהם מוצאים גרסה טובה יותר.</string>
     <string name="sources_order_header">מקורות, נוסו בסדר זה</string>
     <string name="sources_quality_capped">חיבור זה מוגדר מתחת לאיכות גבוהה, ולכן השידורים מומרים כדי להתאים למגבלה. הורדות אינן מושפעות.</string>
-    <string name="jiosaavn_mismatch_warning">עלול להתאים גרסה שגויה של שיר. ההפעלה על אחריותכם.</string>
-    <string name="enable_jiosaavn">להפעיל את JioSaavn?</string>
     <string name="enable_anyway">להפעיל בכל זאת</string>
     <string name="sources_subtitle">מאיפה מגיע האודיו והסדר שבו נעשה שימוש</string>
     <string name="source_matching">התאמת מקורות</string>
@@ -790,11 +771,8 @@
 
     <string name="add_account">הוסף חשבון</string>
 
-    <string name="add_addon">הוסף תוסף</string>
 
-    <string name="add_addon_detail">חבר את BitChord לשרת תוספים</string>
 
-    <string name="addon_url_description">הדבק את כתובת ה-URL של התוסף — תיקיית שורש או manifest.json.</string>
 
     <string name="advanced_options">אפשרויות מתקדמות</string>
 
@@ -1265,16 +1243,12 @@
     <string name="source_downloads_on">הורדות מותרות</string>
     <string name="source_downloads_off">הזרמה בלבד</string>
     <string name="lossless_output_permission">בדיקת קודק Bluetooth</string>
-    <string name="lossless_output_permission_detail">אפשרו מכשירים בקרבת מקום כדי שאוזניות LDAC או LHDC יפתחו תוספים ללא אובדן</string>
     <string name="cached_songs">שירים במטמון</string>
-    <string name="cached_songs_subtitle">שירים מ-YouTube ומ-JioSaavn במטמון השירים</string>
-    <string name="cached_songs_empty">אין עדיין שירים במטמון. שירים שתנגן מ-YouTube או מ-JioSaavn יופיעו כאן.</string>
     <string name="cached_song_partial">חלקי</string>
     <string name="remove_from_cache">הסרה מהמטמון</string>
     <string name="cached_song_remove">הסרה</string>
     <string name="removed_from_cache">הוסר ממטמון השירים</string>
     <string name="show_cache_folder">הצג תיקיית שירים במטמון</string>
-    <string name="show_cache_folder_subtitle">מוסיף לספרייה תיקייה עם שירי YouTube ו-JioSaavn שנשמרו במטמון</string>
     <string name="song_cache_unlimited">ללא הגבלה</string>
     <string name="song_cache_unlimited_subtitle">אין מגבלה. האודיו במטמון יכול לגדול עד שהאחסון יתמלא.</string>
     <string name="clear_song_cache_title">לנקות את מטמון השירים?</string>
@@ -1316,8 +1290,6 @@
     <string name="artist_signatures_url_hint">https://signatures.example.com</string>
     <string name="artist_signatures_unconfigured">לא מוגדר — הקש כדי להגדיר את כתובת ה-API</string>
     <string name="artist_signatures_test_failed">לא ניתן היה להתחבר ל-API בכתובת זו</string>
-    <string name="search_source_addons">תוספים</string>
-    <string name="search_addons_none">אין תוספים מופעלים. אפשר להוסיף אחד בהגדרות ← מקורות.</string>
     <string name="app_icon">סמל האפליקציה</string>
     <string name="app_icon_default">ברירת מחדל</string>
     <string name="show_queue_history">הצגת היסטוריית התור</string>
@@ -1400,12 +1372,6 @@
     <string name="progressive_blur">טשטוש הדרגתי</string>
     <string name="remove_from_history">הסרה מההיסטוריה</string>
     <string name="remove_from_history_failed">לא ניתן להסיר מההיסטוריה</string>
-    <string name="addon_blocked_title">לא ניתן לנגן את השיר הזה</string>
-    <string name="addon_blocked_quality">איכות האודיו ב-%1$s מוגדרת ל-%2$s. שירים מ-%3$s מתנגנים רק ב-Lossless — יש לשנות זאת בהגדרות → איכות אודיו כדי לנגן את השיר.</string>
-    <string name="addon_blocked_watch">המוזיקה מתנגנת דרך השעון שלך, שמגביל את האודיו מתחת ל-Lossless. שירים מ-%1$s יתנגנו שוב כשהטלפון יחזור לנגן את המוזיקה.</string>
-    <string name="download_addon_left_out_title">מוריד בלי %1$s</string>
-    <string name="download_addon_not_allowed">%1$s לא מאפשר הורדות, ולכן השירים שלך נשמרים מהמקורות האחרים שלך.</string>
-    <string name="download_addon_needs_lossless_output">%1$s מספק מוזיקה רק כשמחוברות אוזניות חוטיות, USB או ברמת LDAC. ההורדות מדלגות עליו עד שיתחברו אוזניות כאלה, ולכן השירים שלך נשמרים מהמקורות האחרים שלך.</string>
     <string name="show_listen_together_button">הצגת הכפתור להאזין ביחד</string>
     <string name="show_listen_together_button_subtitle">כשהאפשרות כבויה, הנגן מציג רק את כפתור פלט השמע בין המילים לתור ההשמעה</string>
     <string name="font">גופן</string>

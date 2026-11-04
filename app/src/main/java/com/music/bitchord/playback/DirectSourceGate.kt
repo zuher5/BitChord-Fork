@@ -2,7 +2,6 @@ package com.music.bitchord.playback
 
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.TrackLog
-import com.music.bitchord.data.listentogether.ListenTogether
 import com.music.bitchord.data.settings.AppSettings
 import com.music.bitchord.data.sources.SourceResolver
 import com.music.bitchord.data.sources.SourceStream
@@ -48,10 +47,6 @@ import java.util.concurrent.ConcurrentHashMap
  *     a tick, only while playing and only once the playhead has run on its own
  *     past the last seek. Skipping or scrubbing never triggers a fetch for the
  *     track after.
- *
- * Automix analysis is outside all of this: its `automix_opus` reads resolve
- * to YouTube before this gate is consulted, so it keeps measuring the Opus
- * copy it always has.
  */
 object DirectSourceGate {
 
@@ -73,15 +68,9 @@ object DirectSourceGate {
      */
     const val LOOKUP_TIMEOUT_MS = 15_000L
 
-    /**
-     * Whether Direct Source Stream is on *and* has an addon to stream from.
-     *
-     * Never during a Listen Together party: a party seeks every member to the
-     * host's position and expects the track to be there, and a fetch held
-     * until the window opens would leave this phone behind the others.
-     */
+    /** Whether Direct Source Stream is on *and* has an addon to stream from. */
     fun isActive(): Boolean =
-        AppSettings.directSourceStream.value && !ListenTogether.state.value.inParty &&
+        AppSettings.directSourceStream.value &&
             SourceResolver.directAddons().isNotEmpty()
 
     private data class Open(val playing: Set<String>, val next: String?)
@@ -124,8 +113,8 @@ object DirectSourceGate {
     suspend fun awaitOpen(mediaId: String) {
         if (bypass.get() == true || !isActive() || open.value.admits(mediaId)) return
         TrackLog.d(TAG, "holding $mediaId until it is within ${WINDOW_MS / 1000}s of playing", about = mediaId)
-        combine(open, AppSettings.directSourceStream, ListenTogether.state) { state, on, party ->
-            !on || party.inParty || state.admits(mediaId)
+        combine(open, AppSettings.directSourceStream) { state, on ->
+            !on || state.admits(mediaId)
         }
             .first { it }
         TrackLog.d(TAG, "released $mediaId", about = mediaId)

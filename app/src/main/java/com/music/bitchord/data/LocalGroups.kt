@@ -3,8 +3,6 @@ package com.music.bitchord.data
 import com.music.bitchord.data.model.BrowseType
 import com.music.bitchord.data.model.Song
 import com.music.bitchord.data.settings.LocalMusicSort
-import com.music.bitchord.download.DownloadedCollection
-import com.music.bitchord.download.Downloads
 import java.util.Locale
 
 /**
@@ -12,11 +10,10 @@ import java.util.Locale
  * folder's Albums or Artists tab as a page of its own — the same release page
  * an album off YouTube gets, not a list drawn inline in the folder.
  *
- * [browseId] is what makes it a page. A release downloaded whole is its own
- * download record's page ([Downloads.pageIdFor]); anything grouped off tags is
- * a [LocalGroups] id naming the folder and the name, so the page can be read
- * again after a delete or a rescan, or reopened from the player's "Playing
- * from", without anything having to hold on to the rows.
+ * [browseId] is what makes it a page: a [LocalGroups] id naming the folder and
+ * the name, so the page can be read again after a delete or a rescan, or
+ * reopened from the player's "Playing from", without anything having to hold
+ * on to the rows.
  */
 data class LocalGroup(
     val browseId: String,
@@ -24,12 +21,10 @@ data class LocalGroup(
     /** The credit under the title: an album's artist, or blank. */
     val subtitle: String,
     val thumbnailUrl: String?,
-    /** [BrowseType.ALBUM], [BrowseType.PLAYLIST] for a playlist downloaded whole, [BrowseType.OTHER] for an artist. */
+    /** [BrowseType.ALBUM] for an album, [BrowseType.OTHER] for an artist. */
     val type: BrowseType,
     /** In the release's own order — see [sortedForAlbum]. */
     val songs: List<Song>,
-    /** The record this was downloaded whole under; null for a tag grouping. */
-    val downloadId: String? = null,
 )
 
 /**
@@ -105,59 +100,21 @@ object LocalGroups {
     }
 
     /**
-     * The Albums tab: the releases downloaded whole, then whatever else the
-     * files' own album tags group up.
-     *
-     * The two are merged rather than shown as separate sections because they are
-     * the same kind of thing to whoever is looking for one — a folder of songs
-     * with a name they remember. What matters is only that the *named* ones win
-     * a collision: an album downloaded whole also stamps its name onto each of
-     * its tracks (see `withAlbum` in MainActivity), so without this every one of
-     * them would appear twice, once with its cover and once without.
-     *
-     * A playlist cannot be derived from tags at all — its tracks are off forty
-     * different releases and none of them says which playlist it was pulled
-     * from — so [collections] is the only way one appears here. Empty for
-     * Local Music, where nothing was asked for through this app.
-     *
-     * Releases lead within their own alphabetical run rather than being sorted
-     * together, because a tag grouping is a guess and a recorded release is not.
+     * The Albums tab: whatever the files' own album tags group up.
      */
     fun albumsOf(
         folderId: String,
         songs: List<Song>,
-        collections: List<DownloadedCollection>,
-    ): List<LocalGroup> {
-        val asked = collections.map { collection ->
-            LocalGroup(
-                browseId = Downloads.pageIdFor(collection.id),
-                title = collection.title,
-                // A playlist's tracks are off forty releases, so the first
-                // one's artist is no credit for it.
-                subtitle = collection.subtitle.ifBlank {
-                    if (collection.playlist) "" else collection.songs.firstOrNull()?.artist.orEmpty()
-                },
-                thumbnailUrl = collection.thumbnailUrl,
-                type = if (collection.playlist) BrowseType.PLAYLIST else BrowseType.ALBUM,
-                songs = collection.songs,
-                downloadId = collection.id,
-            )
+    ): List<LocalGroup> = songs
+        .groupBy { it.albumName }
+        .mapNotNull { (name, group) ->
+            // Null is every track that never said what release it was off,
+            // and there is no row to draw for "no album" — those are the
+            // Songs tab's and nothing else's.
+            if (name == null) return@mapNotNull null
+            album(folderId, name, group)
         }
-        val claimed = asked.mapTo(HashSet()) { it.title.lowercase(Locale.ROOT) }
-        val derived = songs
-            .groupBy { it.albumName }
-            .mapNotNull { (name, group) ->
-                // Null is every track that never said what release it was off,
-                // and there is no row to draw for "no album" — those are the
-                // Songs tab's and nothing else's.
-                if (name == null || name.lowercase(Locale.ROOT) in claimed) return@mapNotNull null
-                album(folderId, name, group)
-            }
-        return (asked + derived).sortedWith(
-            compareByDescending<LocalGroup> { it.downloadId != null }
-                .thenBy { it.title.lowercase(Locale.ROOT) },
-        )
-    }
+        .sortedBy { it.title.lowercase(Locale.ROOT) }
 
     /**
      * The Artists tab, by name. No cover of their own: a track's sleeve is not

@@ -165,9 +165,9 @@ object StreamChoice {
      * cooling-off period, not a verdict — long enough to get the track playing
      * and keep it playing, short enough to ask again in the same sitting.
      *
-     * Most of what used to arrive here doesn't any more: [ModuleSource.malformed]
-     * rejects a URL carrying its own origin twice before anything tries to play
-     * it. This is the net under that, for the failures only playback can find.
+     * Most of what used to arrive here is rejected by the resolver before
+     * anything tries to play it. This is the net under that, for the failures
+     * only playback can find.
      */
     private val refusedSubstitutes = ConcurrentHashMap<String, Long>()
 

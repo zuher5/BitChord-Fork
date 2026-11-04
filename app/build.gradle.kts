@@ -1,6 +1,4 @@
 import java.util.Properties
-import java.security.MessageDigest
-import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -20,40 +18,7 @@ val signing = Properties().apply {
     if (file.exists()) file.inputStream().use { load(it) }
 }
 
-val localProps = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.exists()) file.inputStream().use { load(it) }
-}
-val lastfmApiKey: String = (
-    localProps.getProperty("LASTFM_API_KEY")
-        ?: System.getenv("LASTFM_API_KEY")
-        ?: ""
-    ).trim()
-val lastfmSecret: String = (
-    localProps.getProperty("LASTFM_SECRET")
-        ?: System.getenv("LASTFM_SECRET")
-        ?: ""
-    ).trim()
-
-/*
- * Where Listen Together's party server lives. Not a credential — it is a public
- * URL, and every device in a party has to be pointed at the same one — but it is
- * deployment-specific rather than a property of the source, which is what puts
- * it here beside the others instead of in a constant.
- *
- * Empty is a supported state, not a broken build: the field below is only the
- * *default* the address box on the Listen Together screen starts with, and
- * anything typed there wins and persists. So a fresh checkout without this line
- * builds and runs, and simply asks for an address the first time somebody opens
- * the screen. See ListenTogether.DEFAULT_SERVER.
- */
-val listenTogetherServer: String = (
-    localProps.getProperty("LISTEN_TOGETHER_SERVER")
-        ?: System.getenv("LISTEN_TOGETHER_SERVER")
-        ?: "https://bitchord-listen-together.onrender.com"
-    ).trim().trimEnd('/')
-
-// See the root build.gradle.kts: one version for the phone and its watch app.
+// See the root build.gradle.kts: the shared version marker for every build type.
 val betaSuffix = rootProject.extra["bitchordBetaSuffix"] as String
 
 android {
@@ -71,19 +36,6 @@ android {
         versionName = rootProject.extra["bitchordVersionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Last.fm credentials are supplied locally and never committed.
-        buildConfigField("String", "LASTFM_API_KEY", "\"${lastfmApiKey.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
-        buildConfigField("String", "LASTFM_SECRET", "\"${lastfmSecret.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
-        buildConfigField(
-            "String",
-            "LISTEN_TOGETHER_SERVER",
-            "\"${listenTogetherServer.replace("\\", "\\\\").replace("\"", "\\\"")}\"",
-        )
-        // Which release assets are this app's: the phone and TV APKs ship in
-        // the same GitHub release, told apart by file name. See
-        // AppUpdateChecker.apkAssetUrl.
-        buildConfigField("String", "UPDATE_APK_PREFIX", "\"BitChord-\"")
     }
 
     splits {
@@ -92,19 +44,6 @@ android {
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86_64")
             isUniversalApk = true
-        }
-    }
-
-    // The phone <-> watch protocol, one file shared with the watch app so the
-    // two cannot drift. See wearos/protocol/.../WearProtocol.kt.
-    sourceSets {
-        getByName("main") { java.srcDir("../wearos/protocol") }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
         }
     }
 
@@ -158,8 +97,8 @@ android {
              *
              * Nothing is renamed (-dontobfuscate), and every library that reaches
              * for classes by name — Rhino running YouTube's player JavaScript,
-             * NewPipe, InnerTubeX, QuickJS, SMBJ and BouncyCastle, ONNX's JNI,
-             * protobuf-lite, Ktor — is kept whole: see proguard-rules.pro. What R8
+             * NewPipe, InnerTubeX, the FFmpeg JNI bridge, protobuf-lite,
+             * Ktor — is kept whole: see proguard-rules.pro. What R8
              * is left to optimise is Compose, Media3, coroutines and our own
              * code, which is where the time goes. Checked on a device through the
              * `benchmark` build type below before it ships.
@@ -195,9 +134,10 @@ android {
     }
     packaging {
         resources {
-            // SMBJ's BouncyCastle and jspecify both ship this descriptor.
+            // jspecify ships this descriptor more than once across the graph.
             excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-            // The three BouncyCastle jars (bcprov, bcutil, bcpkix) ship one licence between them.
+            // Several libraries on the runtime classpath (Ktor, kotlinx) ship the
+            // same licence/notice files under the same paths.
             pickFirsts += setOf("META-INF/LICENSE.md", "META-INF/LICENSE.txt", "META-INF/NOTICE.md")
         }
     }
@@ -281,10 +221,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    // ProcessLifecycleOwner: whether the app is on screen, for the open-app count.
-    implementation("androidx.lifecycle:lifecycle-process:2.8.7")
-    // The scheduled check behind "Keep playlists updated"; see PlaylistSync.
-    implementation("androidx.work:work-runtime-ktx:2.10.1")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -294,33 +230,25 @@ dependencies {
     implementation("androidx.media3:media3-session:1.11.0")
     implementation("androidx.media3:media3-common:1.11.0")
     implementation("androidx.media3:media3-datasource-okhttp:1.11.0")
-    // Audio is progressive, but Apple serves its motion artwork as HLS — this
-    // is what lets the animated sleeve play it. See CanvasArtworkPlayer.
+    // Some backends hand back HLS manifests rather than bare audio files; the
+    // source layer marks them and this is what plays them. See StreamContainer.
     implementation("androidx.media3:media3-exoplayer-hls:1.11.0")
-    // Source modules hand back manifests rather than files, and which kind is
-    // the backend's choice, not ours: the Tidal one served `.m3u8` until
-    // September 2026 and `.mpd` after it, for the same track and the same
-    // request. Without this artifact a DASH manifest is not merely unplayed —
+    // Source modules hand back manifests rather than files (see StreamContainer's
+    // transport markers), and which kind it is, is the backend's choice. Without
+    // this artifact a DASH manifest is not merely unplayed —
     // DefaultMediaSourceFactory cannot build a source for it, falls back to
     // progressive, and the extractors try to sniff XML as audio
-    // (ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED). See withResolvedStreamType.
+    // (ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED).
     implementation("androidx.media3:media3-exoplayer-dash:1.11.0")
-    // FFmpeg audio decoding for what the phone has no decoder of its own for:
-    // ALAC on every phone, and AC-4, E-AC-3 / AC-3 (Dolby Atmos music),
-    // TrueHD and DTS on phones without Dolby or DTS licensed in. Added as the
-    // *last* audio renderer in silenceSkippingRenderers, so a platform decoder
-    // still wins wherever one exists. No artifact: the extension's Java half is
-    // vendored under app/src/main/java/androidx/media3/decoder/ffmpeg, and
-    // libffmpegJNI.so under src/main/jniLibs is built from librempeg (the only
-    // FFmpeg line with an AC-4 decoder) by native/ffmpeg/build.sh. It needs
-    // media3-decoder, which media3-exoplayer already brings.
+    // Coroutines/Guava interop: Media3's ListenableFutures are awaited from
+    // suspend code around the player.
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.9.0")
 
     // ---- Images: Coil 3 + Palette (dominant colors for the mesh gradient) ----
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
     // Title logos are PNG, but artist signatures are usually SVG — without
-    // this Coil can't decode them (see ArtistSignatureRepository).
+    // this Coil can't decode them (see BitChordApplication's image loader).
     implementation("io.coil-kt.coil3:coil-svg:3.0.4")
     // SF Symbols as Compose vectors, for the iOS-style settings and menus (as Convx uses).
     // Without its own dependencies: it asks for Compose 1.12, which needs a newer Android
@@ -335,21 +263,6 @@ dependencies {
     implementation("dev.chrisbanes.haze:haze:1.3.1")
     implementation("dev.chrisbanes.haze:haze-materials:1.3.1")
 
-    // ---- QR encoding, for the party invite ----
-    // `core` only: the `android-core`/`zxing-android-embedded` artifacts bring
-    // a camera scanner and an Activity with it, and nothing here reads a code —
-    // a party is joined by tapping somebody else's link or typing six
-    // characters. This produces the bit matrix; the drawing is ours, in
-    // [com.music.bitchord.ui.components.QrCode], so the result is styled like
-    // the rest of the app rather than a stock black-and-white bitmap.
-    implementation("com.google.zxing:core:3.5.3")
-
-    // ---- Markdown rendering (release notes in the update dialog) ----
-    // Pure Compose, not an AndroidView wrapper — needed so the text composes
-    // correctly under the dialog's Haze blur.
-    implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.20.0")
-    implementation("com.halilibo.compose-richtext:richtext-commonmark:0.20.0")
-
     // ---- Innertube (YouTube Music) client: Ktor + kotlinx.serialization ----
     // Ktor and serialization are held at InnerTubeX's versions (below) so the
     // upgrade it forces is explicit rather than resolved behind our backs.
@@ -358,9 +271,6 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:3.5.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
-
-    // ---- Discord Rich Presence: the gateway is a WebSocket, so Ktor needs the plugin ----
-    implementation("io.ktor:ktor-client-websockets:3.5.2")
 
     // ---- YouTube stream extraction: live-benchmarked client catalog + cipher tiers ----
     implementation("com.github.MetrolistGroup.innertubex:innertubex-android:v0.7.0")
@@ -386,54 +296,10 @@ dependencies {
     implementation("org.mozilla:rhino:1.8.1")
     implementation("org.mozilla:rhino-engine:1.8.1")
 
-    // ---- Auth/session storage ----
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
-
-    // ---- JS module execution: QuickJS VM for style source plugins ----
-    // Held at InnerTubeX's version; the same VM runs QuickJsExecutor's module sources.
-    implementation("io.github.dokar3:quickjs-kt-android:1.0.14")
-
-    // ---- SMB file shares: pure-Java SMB2/3 client (listing + streaming) ----
-    implementation("com.hierynomus:smbj:0.15.0")
-
-    // ---- Automix: on-device beat/downbeat model (Beat This!, MIT-licensed) ----
-    // The full android artifact, not onnxruntime-mobile: mobile only loads .ort
-    // files, which would put an offline conversion step between the model and
-    // the app for a saving that does not matter in a self-distributed APK.
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.28.0")
-
-    // ---- Casting: Google Cast sender + the route discovery it sits on ----
-    // The framework and the router only. media3-cast is left out on purpose:
-    // its CastPlayer hands the receiver whatever URI a MediaItem carries, and
-    // ours are `bitchord://` addresses that only the service's resolver can
-    // turn into a real stream — see [com.music.bitchord.playback.cast.CastPlayback].
-    implementation("com.google.android.gms:play-services-cast-framework:22.2.0")
-    implementation("androidx.mediarouter:mediarouter:1.8.1")
-
-    // ---- The watch app (wearos/): Data Layer state out, commands in ----
-    // See com.music.bitchord.wear.WearBridge. Rides on the Play services base
-    // the Cast framework already brings, so it adds very little.
-    implementation("com.google.android.gms:play-services-wearable:20.0.1")
-    // Opens the watch app after an update, so its install prompt is on screen.
-    implementation("androidx.wear:wear-remote-interactions:1.1.0")
-
-    // ---- "BitChord for Wear OS": the first install onto a watch ----
-    // Without the Play Store only ADB can install on a watch, so this phone is
-    // the ADB client, over the watch's Wireless debugging — see WatchInstaller.
-    // GPL-3.0/Apache-2.0 dual-licensed. Its own BouncyCastle (jdk15to18) is the
-    // same classes as the jdk18on one SMBJ already brings, so it is excluded;
-    // bcpkix supplies the certificate the ADB client identifies itself with.
-    implementation("com.github.MuntashirAkon:libadb-android:3.1.1") {
-        exclude(group = "org.bouncycastle")
-    }
-    implementation("org.conscrypt:conscrypt-android:2.5.3")
-    implementation("org.bouncycastle:bcpkix-jdk18on:1.85")
-
     testImplementation("junit:junit:4.13.2")
-    // A real HTTP server for the addon tests. The addon protocol is entirely
-    // "what does this app send, and what does it do with what comes back", and
-    // a hand-rolled fake of the client would be a test of the fake. Pinned to
-    // the OkHttp version already on the runtime classpath.
+    // A real HTTP server for the source-layer tests (Innertube parsing, stream
+    // resolution). A hand-rolled fake of the client would be a test of the
+    // fake. Pinned to the OkHttp version already on the runtime classpath.
     testImplementation("com.squareup.okhttp3:mockwebserver:5.3.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
@@ -473,60 +339,3 @@ val verifyDevInstall = tasks.register("verifyDevInstall") {
     }
 }
 tasks.matching { it.name == "installDevDebug" }.configureEach { finalizedBy(verifyDevInstall) }
-
-/*
- * The watch app rides inside the phone app, so "BitChord for Wear OS" in
- * Settings can put it on a watch — or update it — with no computer involved.
- *
- * Each phone variant carries the watch build of the same flavor *and* build
- * type: the same package (dev with dev, prod with prod) and the same signing
- * key, which is what the Wearable Data Layer needs before the two will talk at
- * all. A SHA-256 travels with it, so the phone can tell the watch's build from
- * the one it carries even when the version numbers match.
- *
- * Costs a watch build per phone build; -Pbitchord.bundleWear=false skips it
- * for a quick local iteration (Settings then offers no install).
- */
-abstract class BundleWearApk : DefaultTask() {
-    @get:InputFiles
-    abstract val apks: ConfigurableFileCollection
-
-    @get:OutputDirectory
-    abstract val outputDir: DirectoryProperty
-
-    @TaskAction
-    fun bundle() {
-        val out = outputDir.get().asFile.resolve("wear")
-        out.deleteRecursively()
-        out.mkdirs()
-        val apk = apks.asFileTree.matching { include("*.apk") }.files.singleOrNull()
-            ?: throw GradleException("Expected exactly one watch APK in ${apks.files}")
-        val target = out.resolve("BitChordWear.apk")
-        apk.copyTo(target, overwrite = true)
-        val digest = MessageDigest.getInstance("SHA-256")
-        target.inputStream().use { input ->
-            val buffer = ByteArray(64 * 1024)
-            while (true) {
-                val read = input.read(buffer)
-                if (read < 0) break
-                digest.update(buffer, 0, read)
-            }
-        }
-        out.resolve("BitChordWear.sha256").writeText(digest.digest().joinToString("") { "%02x".format(it) })
-    }
-}
-
-if (providers.gradleProperty("bitchord.bundleWear").orNull != "false" && findProject(":wearos") != null) {
-    androidComponents.onVariants { variant ->
-        val flavor = variant.productFlavors.firstOrNull { it.first == "env" }?.second ?: return@onVariants
-        val type = variant.buildType ?: return@onVariants
-        // The benchmark build has no watch counterpart.
-        if (type != "debug" && type != "release") return@onVariants
-        val cap = variant.name.replaceFirstChar { it.uppercase() }
-        val bundle = tasks.register<BundleWearApk>("bundleWearApk$cap") {
-            dependsOn(":wearos:assemble$cap")
-            apks.from(rootProject.layout.projectDirectory.dir("wearos/build/outputs/apk/$flavor/$type"))
-        }
-        variant.sources.assets?.addGeneratedSourceDirectory(bundle, BundleWearApk::outputDir)
-    }
-}
