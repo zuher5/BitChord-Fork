@@ -5921,7 +5921,6 @@ class PlaybackService : MediaLibraryService() {
             )
             .build()
 
-    }
     private companion object {
         const val MEDIA_ROOT_ID = "root"
         const val MEDIA_RECENTS_ID = "recents"
@@ -6202,16 +6201,6 @@ class PlaybackService : MediaLibraryService() {
          */
         const val AUTOPLAY_WATCHDOG_MS = 15_000L
 
-        /**
-         * How long AutoPlay waits for the party to echo back the tracks it just
-         * sent, before assuming they were refused.
-         *
-         * A queue control is applied and broadcast in the same handler, so the
-         * echo is one round trip — generous here because the cost of being
-         * wrong is only a retry, while being impatient on a slow connection
-         * would throw away a top-up that did land.
-         */
-        const val PARTY_QUEUE_ECHO_TIMEOUT_MS = 5_000L
     }
 }
 
