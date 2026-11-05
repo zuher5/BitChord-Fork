@@ -36,14 +36,29 @@ android {
         versionName = rootProject.extra["bitchordVersionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        /*
+         * Hanya Inggris + Indonesia. shrinkResources memang aktif, tapi tanpa
+         * filter ini AppCompat/Material3 tetap membawa ~80 locale miliknya
+         * ke dalam APK. Fork ini dipakai satu orang dengan dua bahasa itu;
+         * locale lain hanya bobot mati. Tambahkan kembali di sini kalau
+         * butuh bahasa lain.
+         */
+        resourceConfigurations += listOf("en", "id")
     }
 
+    /*
+     * arm64-v8a saja, tanpa universal APK. Semua perangkat Android yang masih
+     * dapat update sekarang arm64, dan fork ini tidak lagi membawa kode native
+     * apa pun (FFmpeg/onnx dihapus) — split per-ABI lain hanya menggandakan
+     * APK dengan isi identik. Satu APK, satu target.
+     */
     splits {
         abi {
             isEnable = true
             reset()
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = true
+            include("arm64-v8a")
+            isUniversalApk = false
         }
     }
 

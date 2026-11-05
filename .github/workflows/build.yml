@@ -1,11 +1,22 @@
 # Build penuh di GitHub — mesin kerja lokal tidak punya JDK/Android SDK.
 # Jalankan modul berurutan sesuai pola 3-modul: :shared → :sharedUi → :app.
+#
+# Hasil akhir: APK arm64-v8a (prod release) ter-publish otomatis sebagai
+# GitHub Release rolling "latest" pada tiap push main yang hijau. Signed
+# bila keystore tersedia lewat GitHub Secrets; kalau belum, tetap ter-publish
+# sebagai unsigned.
 name: Build
 
 on:
   push:
     branches: ["**"]
   pull_request:
+
+env:
+  KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+  KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  KEY_PASS: ${{ secrets.KEY_PASSWORD }}
 
 jobs:
   build:
@@ -27,6 +38,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Restore signing keystore
+        # Format keystore.properties harus persis yang dibaca
+        # app/build.gradle.kts: storeFile menunjuk file di root repo.
+        if: env.KEYSTORE_B64 != ''
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/keystore.jks"
+          {
+            echo "storeFile=$RUNNER_TEMP/keystore.jks"
+            echo "storePassword=$KEYSTORE_PASS"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASS"
+          } > keystore.properties
+
       - name: Build :shared
         run: ./gradlew :shared:assembleDebug --stacktrace
 
@@ -41,14 +65,31 @@ jobs:
         # (app-release-unsigned.apk) — Gradle-nya memang fallback begitu.
         run: ./gradlew :app:assembleRelease --stacktrace
 
-      - name: Upload APK debug
+      - name: Upload APK debug (artifact)
         uses: actions/upload-artifact@v4
         with:
           name: bitchord-debug-apk
           path: app/build/outputs/apk/**/debug/*.apk
 
-      - name: Upload APK release
+      - name: Upload APK release (artifact)
         uses: actions/upload-artifact@v4
         with:
           name: bitchord-release-apk
           path: app/build/outputs/apk/**/release/*.apk
+
+      - name: Publish GitHub Release (rolling "latest")
+        # Hanya dari main. APK prod arm64-v8a release menggantikan asset
+        # release "latest" yang lama; asset lain di release itu dibiarkan.
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: BitChord Fork — latest
+          body: |
+            APK arm64-v8a otomatis dari commit ${{ github.sha }}.
+            - `app-prod-arm64-v8a-release.apk` — tersigned bila keystore sudah di-set di Secrets.
+            - `/prod` = applicationId `com.music.bitchord`; `/dev` = `com.dev.bitchord` (artifact Actions).
+          files: app/build/outputs/apk/prod/release/*.apk
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
