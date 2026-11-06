@@ -115,7 +115,7 @@ fun BitChordApp(viewModel: MainViewModel = viewModel()) {
                     state = playerState,
                     controller = controller,
                     onOpenNowPlaying = { nowPlayingOpen = true },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 72.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
                 )
             }
             TabBar(

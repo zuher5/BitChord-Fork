@@ -87,16 +87,49 @@ tidak mereka butuhkan.
 5. **Lanjut dengar sambil browsing** → tutup sheet (swipe down), mini player
    tetap tampil, navigasi antar tab tidak menghentikan playback.
 
-## 7. Non-functional requirements
+## 7. Distribusi & rilis
+
+Fork ini didistribusikan **langsung lewat GitHub Releases** (bukan Play
+Store) — jadi pipeline build-rilis harus jadi bagian dari produk, bukan
+pekerjaan manual sesekali.
+
+### Kebutuhan
+
+- **Build otomatis di setiap push/PR** (debug build + lint + test) supaya
+  regresi ketahuan sebelum masuk `main`.
+- **Rilis otomatis saat tag di-push** (`v1.2.0` dst.): hasilkan satu APK
+  **`arm64-v8a` saja** (bukan universal APK, bukan AAB — AAB tidak perlu
+  karena distribusi bukan lewat Play Store) yang sudah ditandatangani
+  (signed), lampirkan sebagai asset di GitHub Release, dengan changelog
+  otomatis dari riwayat commit.
+- **Keystore upload key** dikelola sekali, disimpan sebagai GitHub Actions
+  secret (base64), **tidak pernah** di-commit ke repo.
+- **Release dibuat sebagai draft dulu** — publish akhir tetap butuh review
+  manusia, kecuali diminta eksplisit untuk auto-publish. Ini mencegah rilis
+  rusak ter-publish ke user tanpa ada yang mengecek.
+- Versioning: semantic versioning (`MAJOR.MINOR.PATCH`), `versionCode`
+  dinaikkan manual tiap rilis (bukan auto-increment) supaya terkontrol.
+
+### Di luar scope (untuk sekarang)
+
+- Distribusi ke Google Play Store (butuh akun developer, review policy,
+  fastlane/Play publishing API — beda effort besar, tambahkan nanti kalau
+  dibutuhkan).
+- Auto-update in-app (app memeriksa GitHub Releases untuk versi baru) — bisa
+  jadi fitur lanjutan, tidak termasuk 4 fitur inti (Home/Local/Search/Player).
+- Rilis beta/nightly channel terpisah.
+
+### Rujukan teknis
+
+Detail workflow, keystore, dan langkah rilis ada di `AGENTS.md § CI/CD,
+keystore & release`, dan file konkretnya di `.github/workflows/ci.yml`,
+`.github/workflows/release.yml`, `scripts/generate-keystore.sh`.
+
+## 8. Non-functional requirements
 
 - Build APK harus jauh lebih kecil dari upstream (upstream menarik
   `onnxruntime`, `smbj`, `play-services-cast`, `play-services-wearable`,
   `libadb-android`, dll. yang semuanya dibuang — lihat `DESIGN.md §5`).
-- **Hanya arm64-v8a.** Semua perangkat yang masih di-update sekarang arm64,
-  dan fork ini tidak membawa kode native — APK per-ABI lain hanya duplikat.
-  Ditegakkan lewat `splits.abi` di `app/build.gradle.kts`.
-- **Optimasi ukuran aktif dan wajib**: R8 minify + shrinkResources pada
-  release; resource locale hanya `en` + `id` (`resourceConfigurations`).
 - Playback tidak boleh berhenti saat app di-background (foreground service
   wajib ada sejak awal).
 - Local scan tidak boleh blocking UI thread (pakai `Dispatchers.IO`, sudah
@@ -104,29 +137,17 @@ tidak mereka butuhkan.
 - Tidak ada ketergantungan ke backend server kustom (Listen Together backend
   dihapus total).
 
-## 8. Distribusi — build & rilis otomatis via GitHub
-
-Semua build dan rilis terjadi di GitHub Actions (`.github/workflows/build.yml`);
-tidak ada build lokal (mesin kerja tanpa JDK/SDK):
-
-1. Tiap push → build `:shared` → `:sharedUi` → `:app:assembleDebug` +
-   `:app:assembleRelease` (arm64-v8a saja).
-2. APK debug/release di-upload sebagai artifact run.
-3. Push ke `main` yang hijau → APK prod release otomatis ter-publish sebagai
-   **GitHub Release rolling `latest`** (asset diganti tiap build, jadi
-   release `latest` selalu = commit terbaru).
-4. Signing: keystore disimpan sebagai GitHub Secrets (`KEYSTORE_BASE64`,
-   `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); workflow menyusun
-   `keystore.properties` sebelum build. Tanpa secrets, APK keluar unsigned.
-
 ## 9. Metrik sukses (kualitatif, untuk proyek personal/hobi)
 
 - Semua 4 fitur jalan stabil di 1 device test selama penggunaan harian.
-- Ukuran APK release arm64 < setengah ukuran APK upstream.
+- Ukuran APK debug < setengah ukuran APK upstream (lebih kecil lagi karena
+  hanya build `arm64-v8a`).
 - Tidak ada crash saat transisi tab sambil lagu sedang main.
 - Kode `:app` tidak lagi punya file tunggal > 50K (dibanding `MainActivity.kt`
   upstream 328K, `PlaybackService.kt` 468K).
-- APK terbaru selalu bisa diunduh dari release `latest` tanpa langkah manual.
+
+- `git push origin vX.Y.Z` menghasilkan draft GitHub Release dengan APK
+  (arm64-v8a, signed) terlampir, tanpa campur tangan manual selain review & publish.
 
 ## 10. Referensi
 

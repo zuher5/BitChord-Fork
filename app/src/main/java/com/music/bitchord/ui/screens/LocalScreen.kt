@@ -19,17 +19,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.rounded.Album
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,10 +43,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -61,10 +64,19 @@ import com.music.bitchord.ui.components.CoverPlaceholder
 /** The Local screen's three readings of the device's tracks. */
 private enum class LocalTab(val label: String) { SONGS("Songs"), ARTISTS("Artists"), ALBUMS("Albums") }
 
+/** The page's shared 20dp gutter. */
+private val PAGE_GUTTER = 20.dp
+
+/** The mockup's dim caption grey — one step past onSurfaceVariant. */
+private val CAPTION_GREY = Color(0xFF8E8E93)
+
+/** Text on an unselected pill, a step brighter than onSurfaceVariant. */
+private val PILL_OFF_TEXT = Color(0xFFC7C7CC)
+
 /**
  * The device's own music: every track MediaStore holds, as Songs, Artists or
- * Albums. The fork has no folder tree or offline playlists — one scan, three
- * groupings, and a tap anywhere queues straight into the player.
+ * Albums. A 30sp title with a rescan button, pill tabs, and a count caption;
+ * a tap anywhere queues straight into the player.
  *
  * Written fresh against the trimmed [LocalGroups] API rather than trimmed from
  * the upstream folder page, which carried the downloads, selection and upload
@@ -126,13 +138,13 @@ private fun PermissionPrompt(onRequest: () -> Unit, modifier: Modifier = Modifie
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            "BitChord needs access to your music files to show what's on this device.",
+            "MusPlay butuh izin akses file musik untuk memutar lagu di perangkat ini.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.size(16.dp))
         Button(onClick = onRequest) {
-            Text("Allow access", fontWeight = FontWeight.SemiBold)
+            Text("Berikan izin", fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -156,24 +168,49 @@ private fun LocalLibrary(
         item(key = "local-header") {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = PAGE_GUTTER, end = 12.dp, top = 22.dp),
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                Text(
+                    "Local",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
-                ) {
-                    LocalTab.entries.forEach { entry ->
-                        LocalPill(entry.label, selected = entry == tab, onClick = { tab = entry })
-                    }
-                }
-                TextButton(onClick = onRescan) {
-                    Text(
-                        "Pindai ulang",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
+                )
+                IconButton(onClick = onRescan) {
+                    Icon(
+                        Icons.Outlined.Refresh,
+                        contentDescription = "Pindai ulang",
+                        tint = CAPTION_GREY,
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
+        }
+        item(key = "local-tabs") {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = PAGE_GUTTER, vertical = 12.dp),
+            ) {
+                LocalTab.entries.forEach { entry ->
+                    LocalPill(entry.label, selected = entry == tab, onClick = { tab = entry })
+                }
+            }
+        }
+        item(key = "local-count") {
+            Text(
+                "${songs.size} LAGU DI PERANGKAT",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = CAPTION_GREY,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = PAGE_GUTTER, end = PAGE_GUTTER, bottom = 8.dp),
+            )
         }
 
         when (tab) {
@@ -184,10 +221,12 @@ private fun LocalLibrary(
                 )
             }
             LocalTab.ARTISTS -> items(artists, key = { it.browseId }) { group ->
+                // An artist with no picture is a circle with a glyph, per the mockup.
                 GroupRow(
                     title = group.title,
                     subtitle = songCount(group.songs.size),
                     art = null,
+                    circular = true,
                     placeholder = Icons.Rounded.Person,
                     onClick = { onPlaySongs(group.songs, 0) },
                 )
@@ -200,6 +239,7 @@ private fun LocalLibrary(
                         songCount(group.songs.size),
                     ).joinToString(" · "),
                     art = group.thumbnailUrl,
+                    circular = false,
                     placeholder = Icons.Rounded.Album,
                     onClick = { onPlaySongs(group.songs, 0) },
                 )
@@ -232,20 +272,16 @@ private fun LocalLibrary(
 /** One of the three pill tabs above the list. */
 @Composable
 private fun LocalPill(label: String, selected: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(12.dp)
     Text(
         label,
-        style = MaterialTheme.typography.labelLarge,
-        color = if (selected) {
-            MaterialTheme.colorScheme.onPrimary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
+        fontSize = 13.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = if (selected) MaterialTheme.colorScheme.onPrimary else PILL_OFF_TEXT,
         modifier = Modifier
-            .clip(shape)
-            .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant)
+            .clip(CircleShape)
+            .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 7.dp),
     )
 }
 
@@ -257,12 +293,12 @@ private fun SongRow(song: Song, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = PAGE_GUTTER, vertical = 9.dp),
     ) {
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(7.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             AsyncImage(
@@ -276,14 +312,15 @@ private fun SongRow(song: Song, onClick: () -> Unit) {
         Column(Modifier.weight(1f)) {
             Text(
                 song.title,
-                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 song.artist,
-                style = MaterialTheme.typography.bodySmall,
+                fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -291,19 +328,22 @@ private fun SongRow(song: Song, onClick: () -> Unit) {
         }
         Text(
             song.durationText.orEmpty(),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp,
+            color = CAPTION_GREY,
         )
     }
 }
 
-/** An artist or album row: square art (or its glyph), a name and a count. */
+/**
+ * An artist or album row: 44dp art (or its glyph), a name and a count.
+ * Artists wear the circular crop, albums the square one, per the mockup.
+ */
 @Composable
 private fun GroupRow(
     title: String,
     subtitle: String,
     art: String?,
+    circular: Boolean,
     placeholder: ImageVector,
     onClick: () -> Unit,
 ) {
@@ -312,9 +352,14 @@ private fun GroupRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = PAGE_GUTTER, vertical = 9.dp),
     ) {
-        Box(Modifier.size(52.dp).clip(RoundedCornerShape(8.dp))) {
+        Box(
+            Modifier
+                .size(44.dp)
+                .clip(if (circular) CircleShape else RoundedCornerShape(7.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
             CoverPlaceholder(placeholder, Modifier.fillMaxSize())
             if (art != null) {
                 AsyncImage(
@@ -325,19 +370,19 @@ private fun GroupRow(
                 )
             }
         }
-        Spacer(Modifier.width(16.dp))
+        Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
                 title,
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Spacer(Modifier.size(2.dp))
             Text(
                 subtitle,
-                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

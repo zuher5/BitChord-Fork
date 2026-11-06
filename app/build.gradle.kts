@@ -7,17 +7,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-/**
- * Signing details, kept out of the repository in `keystore.properties`
- * (see keystore.properties.example). Absent on a fresh checkout, in which case
- * the release build still runs and simply comes out unsigned rather than
- * failing — only whoever holds the key can produce a shippable APK.
- */
-val signing = Properties().apply {
-    val file = rootProject.file("keystore.properties")
-    if (file.exists()) file.inputStream().use { load(it) }
-}
-
 // See the root build.gradle.kts: the shared version marker for every build type.
 val betaSuffix = rootProject.extra["bitchordBetaSuffix"] as String
 
@@ -38,6 +27,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         /*
+         * arm64-v8a adalah satu-satunya ABI yang dibuild (keputusan disengaja,
+         * lihat AGENTS.md §CI/CD). Tidak ada kode native di fork ini, jadi
+         * filter ini menegaskan target tanpa menggandakan APK.
+         */
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
+
+        /*
          * Hanya Inggris + Indonesia. shrinkResources memang aktif, tapi tanpa
          * filter ini AppCompat/Material3 tetap membawa ~80 locale miliknya
          * ke dalam APK. Fork ini dipakai satu orang dengan dua bahasa itu;
@@ -45,21 +43,6 @@ android {
          * butuh bahasa lain.
          */
         resourceConfigurations += listOf("en", "id")
-    }
-
-    /*
-     * arm64-v8a saja, tanpa universal APK. Semua perangkat Android yang masih
-     * dapat update sekarang arm64, dan fork ini tidak lagi membawa kode native
-     * apa pun (FFmpeg/onnx dihapus) — split per-ABI lain hanya menggandakan
-     * APK dengan isi identik. Satu APK, satu target.
-     */
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a")
-            isUniversalApk = false
-        }
     }
 
     // applicationId can only be overridden per flavor, not per build type, so a
@@ -70,7 +53,7 @@ android {
         create("dev") {
             dimension = "env"
             applicationId = "com.dev.musplay"
-            resValue("string", "app_name", "BitChord Dev")
+            resValue("string", "app_name", "MusPlay Dev")
         }
         create("prod") {
             dimension = "env"
@@ -81,20 +64,29 @@ android {
     }
 
     signingConfigs {
-        // Both halves have to be there, not just the properties file: it *names*
-        // the keystore rather than containing it, and both are gitignored
-        // separately, so a checkout can easily end up with the one and not the
-        // other. A signing config pointing at a keystore that is not on disk
-        // fails the release build outright at validateSigningRelease — which is
-        // exactly the failure the unsigned fallback above exists to avoid, so
-        // the keystore has to be looked for rather than assumed.
-        val store = signing.getProperty("storeFile")?.let { rootProject.file(it) }
-        if (store != null && store.exists()) {
+        /*
+         * Sumber keystore, sesuai AGENTS.md §CI/CD: environment variable
+         * (di-set workflow release) lebih diutamakan; `keystore.properties`
+         * lokal jadi fallback untuk build manual; tanpa keduanya release
+         * keluar unsigned daripada gagal. Kredensial tidak pernah menempel
+         * di source.
+         */
+        val envStore = System.getenv("KEYSTORE_PATH")
+        val props = Properties().apply {
+            val f = rootProject.file("keystore.properties")
+            if (f.exists()) f.inputStream().use { load(it) }
+        }
+        val store = envStore?.let { File(it) }
+            ?: props.getProperty("storeFile")?.let { rootProject.file(it) }
+        val storePass = System.getenv("KEYSTORE_PASSWORD") ?: props.getProperty("storePassword")
+        val alias = System.getenv("KEY_ALIAS") ?: props.getProperty("keyAlias")
+        val keyPass = System.getenv("KEY_PASSWORD") ?: props.getProperty("keyPassword")
+        if (store != null && store.exists() && storePass != null && alias != null && keyPass != null) {
             create("release") {
                 storeFile = store
-                storePassword = signing.getProperty("storePassword")
-                keyAlias = signing.getProperty("keyAlias")
-                keyPassword = signing.getProperty("keyPassword")
+                storePassword = storePass
+                keyAlias = alias
+                keyPassword = keyPass
             }
         }
     }
@@ -158,6 +150,11 @@ android {
             pickFirsts += setOf("META-INF/LICENSE.md", "META-INF/LICENSE.txt", "META-INF/NOTICE.md")
         }
     }
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true

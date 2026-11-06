@@ -1,27 +1,28 @@
 package com.music.bitchord.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LibraryMusic
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.music.bitchord.AppTab
@@ -31,13 +32,25 @@ private data class TabSpec(
     val tab: AppTab,
     val label: String,
     val icon: ImageVector,
-    val iconSelected: ImageVector,
 )
 
 /**
- * The floating bottom tab bar. A simple Surface rather than the upstream
- * glass nav bar: three tabs and a fixed background need no real-time blur,
- * and dropping it removes a whole dependency surface.
+ * The bar's translucent near-black. Not the surface token: the mockup's
+ * rgba(20,20,21,.96) lets the page behind it faintly through, which a solid
+ * surface cannot.
+ */
+private val BAR_BACKGROUND = Color(0xF2141415)
+
+/** The mockup's inactive tab tint — a grey one step dimmer than onSurfaceVariant. */
+private val INACTIVE_TINT = Color(0xFF8E8E93)
+
+private val BAR_HEIGHT = 58.dp
+
+/**
+ * The full-width bottom tab bar: 58dp tall, a 1dp hairline on top, three
+ * evenly spaced items. Replaces the floating pill — the mockup anchors the
+ * bar to the screen's edges, and a pill under a full-width mini player read
+ * as two different design languages.
  */
 @Composable
 fun TabBar(
@@ -46,38 +59,45 @@ fun TabBar(
     modifier: Modifier = Modifier,
 ) {
     val tabs = listOf(
-        TabSpec(AppTab.HOME, "Home", Icons.Outlined.Home, Icons.Filled.Home),
-        TabSpec(AppTab.LOCAL, "Local", Icons.Outlined.LibraryMusic, Icons.Filled.LibraryMusic),
-        TabSpec(AppTab.SEARCH, "Search", Icons.Outlined.Search, Icons.Filled.Search),
+        TabSpec(AppTab.HOME, "Home", Icons.Outlined.Home),
+        // Three ascending bars, as the mockup draws the library tab.
+        TabSpec(AppTab.LOCAL, "Local", Icons.Outlined.BarChart),
+        TabSpec(AppTab.SEARCH, "Search", Icons.Outlined.Search),
     )
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        shape = RoundedCornerShape(24.dp),
-        shadowElevation = 8.dp,
-        modifier = modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-    ) {
+    Column(modifier = modifier.background(BAR_BACKGROUND)) {
+        // A border() on the bar would stroke all four sides; the mockup asks
+        // for the hairline on top only.
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(MaterialTheme.colorScheme.outline),
+        )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.fillMaxWidth().height(BAR_HEIGHT),
         ) {
             tabs.forEach { spec ->
                 val isSelected = spec.tab == selected
-                androidx.compose.foundation.layout.Column(
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .weight(1f)
-                        .clickable { onSelect(spec.tab) },
+                        .clickable { onSelect(spec.tab) }
+                        .padding(vertical = 6.dp),
                 ) {
                     Icon(
-                        if (isSelected) spec.iconSelected else spec.icon,
+                        spec.icon,
                         contentDescription = spec.label,
-                        tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = if (isSelected) MaterialTheme.colorScheme.primary else INACTIVE_TINT,
+                        modifier = Modifier.size(22.dp),
                     )
+                    Spacer(Modifier.height(3.dp))
                     Text(
                         spec.label,
-                        fontSize = 11.sp,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else INACTIVE_TINT,
                     )
                 }
             }

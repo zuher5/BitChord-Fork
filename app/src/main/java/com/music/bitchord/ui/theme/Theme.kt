@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -24,14 +25,18 @@ import com.music.bitchord.data.settings.AppFont
 val AccentRed = Color(0xFFFA2D48)
 
 private val DarkColors = darkColorScheme(
-    primary = Color.White,
-    onPrimary = Color.Black,
-    background = Color.Black,
-    onBackground = Color.White,
-    surface = Color(0xFF0D0D0F),
-    onSurface = Color.White,
+    // Mockup MusPlay: bg #0B0B0C, surface #1C1C1E, teks #F5F5F7,
+    // sekunder #9A9A9E, aksen #FF453A.
+    primary = Color(0xFFFF453A),
+    onPrimary = Color(0xFF1A0A07),
+    background = Color(0xFF0B0B0C),
+    onBackground = Color(0xFFF5F5F7),
+    surface = Color(0xFF1C1C1E),
+    onSurface = Color(0xFFF5F5F7),
     surfaceVariant = Color(0xFF1C1C1E),
-    onSurfaceVariant = Color(0xFF8E8E93),
+    onSurfaceVariant = Color(0xFF9A9A9E),
+    secondary = Color(0xFFC7C7CC),
+    onSecondary = Color(0xFF1A0A07),
     outline = Color(0xFF2C2C2E),
 )
 
@@ -64,6 +69,30 @@ private val LightColors = lightColorScheme(
  * Compose synthesises nothing, so a weight outside these falls back to the
  * nearest one listed.
  */
+/**
+ * Inter, the mockup's typeface — one variable TTF (weights 400-800) pinned to
+ * the four weights the design uses. Variable axes need API 26+, which is the
+ * floor of this app anyway.
+ */
+val Inter = FontFamily(
+    Font(
+        R.font.inter_variable, FontWeight.W400,
+        variationSettings = FontVariation.Settings(FontVariation.weight(400)),
+    ),
+    Font(
+        R.font.inter_variable, FontWeight.W600,
+        variationSettings = FontVariation.Settings(FontVariation.weight(600)),
+    ),
+    Font(
+        R.font.inter_variable, FontWeight.W700,
+        variationSettings = FontVariation.Settings(FontVariation.weight(700)),
+    ),
+    Font(
+        R.font.inter_variable, FontWeight.W800,
+        variationSettings = FontVariation.Settings(FontVariation.weight(800)),
+    ),
+)
+
 val SFProDisplay = FontFamily(
     Font(R.font.sf_pro_display_regular, FontWeight.W400),
     Font(R.font.sf_pro_display_regular, FontWeight.W500),
@@ -82,16 +111,18 @@ val SFProDisplay = FontFamily(
  * measure against and follow the same trend.
  */
 private val BitChordTypography = Typography(
-    displayLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 34.sp, letterSpacing = (-0.5).sp),
+    displayLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.4).sp),
     headlineLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.4).sp),
-    headlineMedium = TextStyle(fontWeight = FontWeight.W700, fontSize = 22.sp, letterSpacing = (-0.25).sp),
-    titleLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 20.sp, letterSpacing = (-0.2).sp),
-    titleMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 16.sp, letterSpacing = 0.05.sp),
-    bodyLarge = TextStyle(fontWeight = FontWeight.W400, fontSize = 16.sp, letterSpacing = 0.2.sp),
-    bodyMedium = TextStyle(fontWeight = FontWeight.W400, fontSize = 14.sp, letterSpacing = 0.3.sp),
-    labelMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 12.sp, letterSpacing = 0.25.sp),
-    labelSmall = TextStyle(fontWeight = FontWeight.W600, fontSize = 11.sp, letterSpacing = 0.3.sp),
-).withFamily(SFProDisplay)
+    headlineSmall = TextStyle(fontWeight = FontWeight.W800, fontSize = 22.sp, letterSpacing = (-0.3).sp),
+    titleLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 19.sp, letterSpacing = (-0.2).sp),
+    titleMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 14.sp, letterSpacing = 0.sp),
+    titleSmall = TextStyle(fontWeight = FontWeight.W600, fontSize = 13.sp, letterSpacing = 0.sp),
+    bodyLarge = TextStyle(fontWeight = FontWeight.W400, fontSize = 15.sp, letterSpacing = 0.1.sp),
+    bodyMedium = TextStyle(fontWeight = FontWeight.W400, fontSize = 14.sp, letterSpacing = 0.1.sp),
+    bodySmall = TextStyle(fontWeight = FontWeight.W400, fontSize = 12.sp, letterSpacing = 0.2.sp),
+    labelMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 12.sp, letterSpacing = 0.7.sp),
+    labelSmall = TextStyle(fontWeight = FontWeight.W700, fontSize = 11.sp, letterSpacing = 0.7.sp),
+).withFamily(Inter)
 
 /**
  * SF Pro Display as the app first shipped it, before [SFProDisplay] moved every
@@ -140,12 +171,13 @@ private fun Typography.withFamily(family: FontFamily) = Typography(
 
 @Composable
 fun BitChordTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    @Suppress("UNUSED_PARAMETER") darkTheme: Boolean = true,
     font: AppFont = AppFont.DEFAULT,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        // Mockup MusPlay dark-only — light scheme tidak dipakai.
+        colorScheme = DarkColors,
         typography = when (font) {
             AppFont.DEFAULT -> BitChordTypography
             AppFont.LEGACY -> LegacyTypography
