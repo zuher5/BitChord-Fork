@@ -103,7 +103,7 @@ jobs:
           body: |
             APK arm64-v8a otomatis dari commit ${{ github.sha }}.
             - `app-prod-arm64-v8a-release.apk` — tersigned bila keystore sudah di-set di Secrets.
-            - `/prod` = applicationId `com.music.bitchord`; `/dev` = `com.dev.bitchord` (artifact Actions).
+            - `/prod` = applicationId `com.music.musplay`; `/dev` = `com.dev.musplay` (artifact Actions).
           files: app/build/outputs/apk/prod/release/*.apk
           make_latest: true
         env:
