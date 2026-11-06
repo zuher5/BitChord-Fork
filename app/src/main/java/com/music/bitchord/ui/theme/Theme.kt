@@ -74,6 +74,7 @@ private val LightColors = lightColorScheme(
  * the four weights the design uses. Variable axes need API 26+, which is the
  * floor of this app anyway.
  */
+@OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
 val Inter = FontFamily(
     Font(
         R.font.inter_variable, FontWeight.W400,
