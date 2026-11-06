@@ -58,8 +58,10 @@ shared/src/.../YtMusicRepository.kt
   jangan tambahkan kembali `armeabi-v7a`/`x86_64` tanpa alasan kuat.
 - **Signing lewat GitHub Secrets**: `KEYSTORE_BASE64` (keystore .jks,
   base64), `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`. Workflow
-  menulis `keystore.properties` otomatis dari secrets; tanpa secrets,
-  release keluar unsigned (fallback yang sudah ada di `app/build.gradle.kts`).
+  menulis `keystore.properties` otomatis dari secrets, dan step
+  `Verify release signing` (apksigner) **menggagalkan build** bila APK
+  release keluar unsigned — unsigned tidak boleh sampai ke GitHub Release
+  (itu penyebab `INSTALL_PARSE_FAILED_NO_CERTIFICATES` saat instalasi).
 - **Optimasi ukuran wajib dijaga**: R8 minify + shrinkResources aktif di
   release; `resourceConfigurations` hanya `en` + `id`; tanpa jniLibs/FFmpeg;
   dependency out-of-scope tetap terlarang (`DESIGN.md §5`). Kalau menambah
