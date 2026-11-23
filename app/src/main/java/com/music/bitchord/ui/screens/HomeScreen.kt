@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,9 +51,8 @@ private val CARD_CORNER = 10.dp
 
 /**
  * The YouTube Music front page: a 30sp title, then every shelf as one
- * horizontal row of fixed-width cards. Tap on a playable card queues it
- * straight into the player — the fork has no detail pages, so browse-only
- * cards (albums/playlists) render inert.
+ * horizontal row of fixed-width cards. Tap on any card (track, album, or playlist)
+ * resolves its songs and queues into the player.
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +60,7 @@ fun HomeScreen(
     home: UiState<HomeFeed>,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
-    onPlaySong: (Song) -> Unit,
+    onPlayShelfItem: (ShelfItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     PullToRefreshBox(
@@ -72,15 +73,24 @@ fun HomeScreen(
         when (home) {
             is UiState.Loading -> Box(Modifier.fillMaxSize())
             is UiState.Error -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    home.message,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.clickable { onRefresh() },
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(24.dp),
+                ) {
+                    Text(
+                        home.message,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    Button(onClick = onRefresh) {
+                        Text("Coba Lagi", fontWeight = FontWeight.SemiBold)
+                    }
+                }
             }
             is UiState.Success -> ShelfList(
                 feed = home.data,
-                onPlaySong = onPlaySong,
+                onPlayShelfItem = onPlayShelfItem,
                 onLoadMore = onLoadMore,
             )
         }
@@ -90,7 +100,7 @@ fun HomeScreen(
 @Composable
 private fun ShelfList(
     feed: HomeFeed,
-    onPlaySong: (Song) -> Unit,
+    onPlayShelfItem: (ShelfItem) -> Unit,
     onLoadMore: () -> Unit,
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
@@ -110,9 +120,7 @@ private fun ShelfList(
         }
         feed.shelves.forEachIndexed { index, shelf ->
             item(key = "shelf:${shelf.title}:${shelf.items.size}") {
-                // Every shelf renders as a card row — the mockup carries no
-                // vertical track lists, whatever layout YouTube named.
-                ShelfRow(shelf, first = index == 0, onPlaySong = onPlaySong)
+                ShelfRow(shelf, first = index == 0, onPlayShelfItem = onPlayShelfItem)
             }
         }
         item {
@@ -132,7 +140,7 @@ private fun ShelfList(
 
 /** One shelf: its header, then a horizontal row of [ShelfCard]s. */
 @Composable
-private fun ShelfRow(shelf: HomeShelf, first: Boolean, onPlaySong: (Song) -> Unit) {
+private fun ShelfRow(shelf: HomeShelf, first: Boolean, onPlayShelfItem: (ShelfItem) -> Unit) {
     Column {
         Text(
             shelf.title,
@@ -143,8 +151,6 @@ private fun ShelfRow(shelf: HomeShelf, first: Boolean, onPlaySong: (Song) -> Uni
                 start = PAGE_GUTTER,
                 end = PAGE_GUTTER,
                 bottom = 10.dp,
-                // The title header already carries the page's top spacing; the
-                // first shelf sits straight under it.
                 top = if (first) 0.dp else 22.dp,
             ),
         )
@@ -153,19 +159,18 @@ private fun ShelfRow(shelf: HomeShelf, first: Boolean, onPlaySong: (Song) -> Uni
             horizontalArrangement = Arrangement.spacedBy(CARD_GAP),
         ) {
             items(shelf.items, key = { it.videoId ?: it.browseId ?: it.title }) { item ->
-                ShelfCard(item, onPlaySong)
+                ShelfCard(item, onPlayShelfItem)
             }
         }
     }
 }
 
 @Composable
-private fun ShelfCard(item: ShelfItem, onPlaySong: (Song) -> Unit) {
-    val song = item.asSong()
+private fun ShelfCard(item: ShelfItem, onPlayShelfItem: (ShelfItem) -> Unit) {
     Column(
         Modifier
             .width(CARD_WIDTH)
-            .clickable(enabled = song != null) { song?.let(onPlaySong) },
+            .clickable { onPlayShelfItem(item) },
     ) {
         Box(
             Modifier

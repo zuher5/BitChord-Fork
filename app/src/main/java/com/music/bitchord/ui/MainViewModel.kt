@@ -118,6 +118,64 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    /** Clears the current query, suggestions, and results. */
+    fun clearSearch() {
+        inputSource.value = ""
+        _suggestions.value = emptyList()
+        _results.value = UiState.Success(emptyList())
+        searchContinuation = null
+    }
+
+    /** Resolves a shelf item (single track or album/playlist) and plays its tracks. */
+    fun playShelfItem(
+        item: com.music.bitchord.data.model.ShelfItem,
+        onPlaySongs: (List<com.music.bitchord.data.model.Song>, Int) -> Unit,
+    ) {
+        val vid = item.videoId
+        if (vid != null) {
+            onPlaySongs(
+                listOf(
+                    com.music.bitchord.data.model.Song(
+                        videoId = vid,
+                        title = item.title,
+                        artist = item.subtitle,
+                        thumbnailUrl = item.thumbnailUrl,
+                    )
+                ),
+                0,
+            )
+            return
+        }
+        val browseId = item.browseId ?: return
+        viewModelScope.launch {
+            YtMusicRepository.browseSongs(browseId).fold(
+                onSuccess = { page ->
+                    if (page.songs.isNotEmpty()) {
+                        onPlaySongs(page.songs, 0)
+                    }
+                },
+                onFailure = { /* noop on error */ },
+            )
+        }
+    }
+
+    /** Resolves an artist or album search result and plays its tracks. */
+    fun playBrowseItem(
+        item: com.music.bitchord.data.model.BrowseItem,
+        onPlaySongs: (List<com.music.bitchord.data.model.Song>, Int) -> Unit,
+    ) {
+        viewModelScope.launch {
+            YtMusicRepository.browseSongs(item.browseId).fold(
+                onSuccess = { page ->
+                    if (page.songs.isNotEmpty()) {
+                        onPlaySongs(page.songs, 0)
+                    }
+                },
+                onFailure = { /* noop on error */ },
+            )
+        }
+    }
+
     /** Appends the next result page when the list reaches its end. */
     fun loadMoreResults(query: String) {
         val token = searchContinuation ?: return

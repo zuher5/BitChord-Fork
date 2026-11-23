@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,10 +78,20 @@ fun SearchScreen(
     filter: SearchFilter,
     onInput: (String) -> Unit,
     onSubmit: (String, SearchFilter) -> Unit,
+    onClearSearch: () -> Unit = {},
     onPlaySong: (Song) -> Unit,
+    onPlayBrowseItem: (BrowseItem) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var query by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    // Intercept Back to clear search query and results first
+    BackHandler(enabled = query.isNotEmpty() || (results is UiState.Success && results.data.isNotEmpty())) {
+        query = ""
+        onClearSearch()
+        keyboardController?.hide()
+    }
 
     Column(modifier.fillMaxSize()) {
         Text(
@@ -99,23 +112,35 @@ fun SearchScreen(
                 query = it
                 onInput(it)
             },
-            onSubmit = { onSubmit(query, SearchFilter.ALL) },
+            onSubmit = {
+                keyboardController?.hide()
+                onSubmit(query, SearchFilter.ALL)
+            },
+            onClear = {
+                query = ""
+                onClearSearch()
+                keyboardController?.hide()
+            },
         )
         ResultsList(
+            query = query,
             results = results,
             onPlaySong = onPlaySong,
+            onPlayBrowseItem = onPlayBrowseItem,
             onEndReached = { if (query.isNotBlank()) onSubmit(query, SearchFilter.ALL) },
         )
     }
 }
 
-/** The rounded 10dp field: a magnifier, a line of text, nothing else. */
+/** The rounded 10dp field: a magnifier, a line of text, and an optional clear button. */
 @Composable
 private fun SearchField(
     query: String,
     onQueryChange: (String) -> Unit,
     onSubmit: () -> Unit,
+    onClear: () -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -143,7 +168,10 @@ private fun SearchField(
             ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSubmit() }),
+            keyboardActions = KeyboardActions(onSearch = {
+                keyboardController?.hide()
+                onSubmit()
+            }),
             modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 9.dp),
@@ -160,14 +188,30 @@ private fun SearchField(
                 }
             },
         )
-        Spacer(Modifier.width(12.dp))
+        if (query.isNotEmpty()) {
+            IconButton(
+                onClick = onClear,
+                modifier = Modifier.size(32.dp).padding(end = 6.dp),
+            ) {
+                Icon(
+                    Icons.Rounded.Close,
+                    contentDescription = "Hapus",
+                    tint = CAPTION_GREY,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+        } else {
+            Spacer(Modifier.width(12.dp))
+        }
     }
 }
 
 @Composable
 private fun ResultsList(
+    query: String,
     results: UiState<List<SearchResult>>,
     onPlaySong: (Song) -> Unit,
+    onPlayBrowseItem: (BrowseItem) -> Unit,
     onEndReached: () -> Unit,
 ) {
     when (results) {
@@ -190,34 +234,44 @@ private fun ResultsList(
                 .filterIsInstance<SearchResult.Browse>()
                 .filter { it.item.type != BrowseType.ARTIST }
 
-            LazyColumn(Modifier.fillMaxSize()) {
-                if (topTracks.isNotEmpty()) {
-                    item(key = "header:top") { SectionHeader("HASIL TERATAS", first = true) }
-                    items(topTracks, key = { "top:${it.song.videoId}" }) {
-                        TrackRow(song = it.song, promoted = true, onPlaySong = onPlaySong)
-                    }
+            if (rows.isEmpty() && query.isNotBlank()) {
+                Box(Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        "Tidak ada hasil untuk \"$query\"",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                    )
                 }
-                if (tracks.isNotEmpty()) {
-                    item(key = "header:songs") { SectionHeader("LAGU") }
-                    items(tracks, key = { "track:${it.song.videoId}" }) {
-                        TrackRow(song = it.song, onPlaySong = onPlaySong)
+            } else {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    if (topTracks.isNotEmpty()) {
+                        item(key = "header:top") { SectionHeader("HASIL TERATAS", first = true) }
+                        items(topTracks, key = { "top:${it.song.videoId}" }) {
+                            TrackRow(song = it.song, promoted = true, onPlaySong = onPlaySong)
+                        }
                     }
-                }
-                if (artists.isNotEmpty()) {
-                    item(key = "header:artists") { SectionHeader("ARTIS") }
-                    items(artists, key = { "artist:${it.item.browseId}" }) {
-                        BrowseRow(it.item, circular = true)
+                    if (tracks.isNotEmpty()) {
+                        item(key = "header:songs") { SectionHeader("LAGU") }
+                        items(tracks, key = { "track:${it.song.videoId}" }) {
+                            TrackRow(song = it.song, onPlaySong = onPlaySong)
+                        }
                     }
-                }
-                if (albums.isNotEmpty()) {
-                    item(key = "header:albums") { SectionHeader("ALBUM") }
-                    items(albums, key = { "album:${it.item.browseId}" }) {
-                        BrowseRow(it.item, circular = false)
+                    if (artists.isNotEmpty()) {
+                        item(key = "header:artists") { SectionHeader("ARTIS") }
+                        items(artists, key = { "artist:${it.item.browseId}" }) {
+                            BrowseRow(it.item, circular = true, onClick = { onPlayBrowseItem(it.item) })
+                        }
                     }
-                }
-                item {
-                    LaunchedEffect(rows.size) { onEndReached() }
-                    Spacer(Modifier.size(24.dp))
+                    if (albums.isNotEmpty()) {
+                        item(key = "header:albums") { SectionHeader("ALBUM") }
+                        items(albums, key = { "album:${it.item.browseId}" }) {
+                            BrowseRow(it.item, circular = false, onClick = { onPlayBrowseItem(it.item) })
+                        }
+                    }
+                    item {
+                        LaunchedEffect(rows.size) { onEndReached() }
+                        Spacer(Modifier.size(24.dp))
+                    }
                 }
             }
         }
@@ -310,13 +364,18 @@ private fun TrackRow(
     }
 }
 
-/** Artist/album rows render inert — the fork has no detail pages. */
+/** Artist/album row: taps resolve and play songs from the backing collection. */
 @Composable
-private fun BrowseRow(item: BrowseItem, circular: Boolean) {
+private fun BrowseRow(
+    item: BrowseItem,
+    circular: Boolean,
+    onClick: () -> Unit = {},
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(horizontal = PAGE_GUTTER, vertical = 9.dp),
     ) {
         Box(
